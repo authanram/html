@@ -16,8 +16,6 @@ class Renderer extends AbstractRenderer
             $element = new $tag();
 
             $arguments = static::mergeArguments($arguments, $element->toArray());
-
-            $plugins = array_map(fn (string $plugin) => new $plugin(), $element::$plugins);
         }
 
         $html = trim(parent::render(...$arguments));

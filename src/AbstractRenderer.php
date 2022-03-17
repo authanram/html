@@ -11,11 +11,6 @@ abstract class AbstractRenderer
 {
     protected array $plugins = [];
 
-    public function getPlugins(): array
-    {
-        return $this->plugins;
-    }
-
     public function setPlugins(array $plugins): static
     {
         foreach ($plugins as $plugin) {

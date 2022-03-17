@@ -5,27 +5,12 @@ declare(strict_types=1);
 use Authanram\Html\Plugins\BladeRendererPlugin;
 use Authanram\Html\Renderer;
 use Authanram\Html\Tests\TestFiles\TestElement;
-use Authanram\Html\Tests\TestFiles\TestElementWithPlugins;
 use Authanram\Html\Tests\TestFiles\TestPlugin;
 
 it('renders', function (): void {
     $result = (new Renderer())->render('p', ['class' => 'red'], ['text']);
 
     expect($result)->toEqual('<p class="red">text</p>');
-});
-
-it('renders element', function (): void {
-    $result = (new Renderer())->render(TestElement::class);
-
-    expect($result)->toEqual('<span class="purple">foo: <span data-x="bar">qux</span></span>');
-});
-
-it('renders element with plugins', function (): void {
-    $result = (new Renderer())
-        ->setPlugins([BladeRendererPlugin::class])
-        ->render(TestElementWithPlugins::class, ['class' => 'blue'], ['qux']);
-
-    expect($result)->toEqual('<div data-testplugin><div class="blue">qux</div></div>');
 });
 
 it('renders element with attributes', function (): void {
