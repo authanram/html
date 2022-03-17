@@ -66,7 +66,7 @@ abstract class AbstractRenderer
         return class_exists($tag) && is_subclass_of($tag, Element::class);
     }
 
-    protected static function arguments(array $arguments, array $argumentsElement): array
+    protected static function mergeArguments(array $arguments, array $argumentsElement): array
     {
         foreach ($arguments as $key => $value) {
             if ($key === 'tag' || empty($value)) {

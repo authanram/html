@@ -15,11 +15,10 @@ class Renderer extends AbstractRenderer
         $plugins = $this->plugins;
 
         if (static::isElement($tag)) {
-            $element = new $tag;
+            /** @noinspection PhpUndefinedFieldInspection */
+            $this->setPlugins($plugins, $tag::$pluginsIgnore);
 
-            $this->setPlugins($plugins, $element::$pluginsIgnore);
-
-            $arguments = static::arguments($arguments, $element->toArray());
+            $arguments = static::mergeArguments($arguments, (new $tag)->toArray());
         }
 
         $arguments['contents'] = $this->renderContents($arguments['contents']);
