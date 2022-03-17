@@ -5,13 +5,13 @@ declare(strict_types=1);
 use Authanram\Html\Plugins\BladeRendererPlugin;
 use Authanram\Html\Renderer;
 
-it('renders to html', function (): void {
+it('renders', function (): void {
     $result = (new Renderer())->render('p', ['class' => 'red'], ['text']);
 
     expect($result)->toEqual('<p class="red">text</p>');
 });
 
-it('renders contents to html', function (): void {
+it('renders with contents', function (): void {
     $result = (new Renderer())->render('p', ['class' => 'red'], [
         ['span', ['class' => 'green'], ['text']],
     ]);
