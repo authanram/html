@@ -10,15 +10,21 @@ class Renderer extends AbstractRenderer
     {
         $arguments = ['tag' => $tag, 'attributes' => $attributes, 'contents' => $contents];
 
+        $plugins = $this->plugins;
+
         if (static::isElement($tag)) {
-            $arguments = static::mergeArguments($arguments);
+            $element = new $tag();
+
+            $arguments = static::mergeArguments($arguments, $element->toArray());
+
+            $plugins = array_map(fn (string $plugin) => new $plugin(), $element::$plugins);
         }
 
-        $html = parent::render(...$arguments);
+        $html = trim(parent::render(...$arguments));
 
         /** @var AbstractPlugin $plugin */
-        foreach ($this->plugins as $plugin) {
-            $html = $plugin->render($html);
+        foreach ($plugins as $plugin) {
+            $html = $plugin->render(trim($html));
         }
 
         return $html;
@@ -29,10 +35,8 @@ class Renderer extends AbstractRenderer
         return class_exists($tag) && is_subclass_of($tag, Element::class);
     }
 
-    protected static function mergeArguments(array $arguments): array
+    protected static function mergeArguments(array $arguments, array $argumentsElement): array
     {
-        $argumentsElement = (new $arguments['tag']())->toArray();
-
         foreach ($arguments as $key => $value) {
             if ($key === 'tag' || empty($value)) {
                 continue;
