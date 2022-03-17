@@ -20,11 +20,11 @@ class Element
 
     public function __construct(?string $tag = null, ?array $attributes = null, ?array $contents = null)
     {
-        $this->tag ??= $tag;
+        $this->tag = $tag ?? $this->tag ?? static::$defaultTag;
 
-        $this->attributes ??= $attributes;
+        $this->attributes = $attributes ?? $this->attributes ?? [];
 
-        $this->contents ??= $contents;
+        $this->contents = $contents ?? $this->contents ?? [];
     }
 
     public function setRenderer(AbstractRenderer|string $renderer): static

@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace Authanram\Html;
 
 use InvalidArgumentException;
+use Spatie\HtmlElement\HtmlElement as SpatieHtmlElement;
 
 abstract class AbstractRenderer
 {
     protected array $plugins = [];
-
-    abstract public function render(string $tag, array $attributes, array $contents): string;
 
     public function getPlugins(): array
     {
@@ -28,6 +27,11 @@ abstract class AbstractRenderer
         }
 
         return $this;
+    }
+
+    public function render(string $tag, array $attributes, array $contents): string
+    {
+        return SpatieHtmlElement::render($tag, $attributes, $this->renderContents($contents));
     }
 
     protected function renderContents(array $contents): array

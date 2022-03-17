@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Authanram\Html\Plugins\BladeRendererPlugin;
 use Authanram\Html\Renderer;
+use Authanram\Html\Tests\TestFiles\TestElement;
 
 it('renders', function (): void {
     $result = (new Renderer())->render('p', ['class' => 'red'], ['text']);
@@ -11,7 +12,25 @@ it('renders', function (): void {
     expect($result)->toEqual('<p class="red">text</p>');
 });
 
-it('renders with contents', function (): void {
+it('renders element', function (): void {
+    $result = (new Renderer())->render(TestElement::class);
+
+    expect($result)->toEqual('<span class="purple">foo: <span data-x="bar">qux</span></span>');
+});
+
+it('renders element with attributes', function (): void {
+    $result = (new Renderer())->render(TestElement::class, ['class' => 'green']);
+
+    expect($result)->toEqual('<span class="green">foo: <span data-x="bar">qux</span></span>');
+});
+
+it('renders element with contents', function (): void {
+    $result = (new Renderer())->render(TestElement::class, [], ['quux']);
+
+    expect($result)->toEqual('<span class="purple">quux</span>');
+});
+
+it('renders contents', function (): void {
     $result = (new Renderer())->render('p', ['class' => 'red'], [
         ['span', ['class' => 'green'], ['text']],
     ]);
