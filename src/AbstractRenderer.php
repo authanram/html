@@ -5,30 +5,60 @@ declare(strict_types=1);
 namespace Authanram\Html;
 
 use InvalidArgumentException;
-use Spatie\HtmlElement\HtmlElement as SpatieHtmlElement;
 
 abstract class AbstractRenderer
 {
     protected array $plugins = [];
 
-    public function setPlugins(array $plugins): static
+    abstract public function render(string $tag, array $attributes = [], array $contents = []): string;
+
+    public function setPlugins(array $plugins, array $ignore = []): static
     {
         $this->plugins = [];
 
         foreach ($plugins as $plugin) {
             if (is_subclass_of($plugin, AbstractPlugin::class) === false) {
-                throw new InvalidArgumentException('Plugin must extend: '.AbstractPlugin::class);
+                throw new InvalidArgumentException('Plugin must extend: ' . AbstractPlugin::class);
             }
 
-            $this->plugins[] = is_string($plugin) ? new $plugin : $plugin;
+            $plugin = is_string($plugin) ? new $plugin : $plugin;
+
+            if (in_array($plugin::class, $ignore, true)) {
+                continue;
+            }
+
+            $this->plugins[] = $plugin;
         }
 
         return $this;
     }
 
-    public function render(string $tag, array $attributes, array $contents): string
+    protected function renderContents(array $contents): array
     {
-        return SpatieHtmlElement::render($tag, $attributes, $this->renderContents($contents));
+        $rendered = [];
+
+        foreach ($contents as $item) {
+            if (is_array($item)) {
+                $rendered[] = $this->render(...$item);
+                continue;
+            }
+
+            if (static::isElement($item)) {
+                $rendered[] = $this->render($item, [], []);
+                continue;
+            }
+
+            if (is_string($item)) {
+                $rendered[] = $item;
+                continue;
+            }
+
+            throw new InvalidArgumentException(
+                'Expected array|string as content, got: '.gettype($item),
+            );
+        }
+
+        return $rendered;
     }
 
     protected static function isElement(string $tag): bool
@@ -47,33 +77,5 @@ abstract class AbstractRenderer
         }
 
         return $argumentsElement;
-    }
-
-    protected function renderContents(array $contents): array
-    {
-        $rendered = [];
-
-        foreach ($contents as $content) {
-            if (is_array($content)) {
-                $rendered[] = $this->render(...$content);
-                continue;
-            }
-
-            if (static::isElement($content)) {
-                $rendered[] = $this->render($content, [], []);
-                continue;
-            }
-
-            if (is_string($content)) {
-                $rendered[] = $content;
-                continue;
-            }
-
-            throw new InvalidArgumentException(
-                'Expected array|string as content, got: '.gettype($content),
-            );
-        }
-
-        return $rendered;
     }
 }
