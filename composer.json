@@ -10,10 +10,12 @@
     "homepage": "https://authanram.com",
     "require": {
         "php": "^8.0",
+        "illuminate/support": "^9.0",
         "spatie/html-element": "^1.1"
     },
     "require-dev": {
         "nunomaduro/phpinsights": "^2.0",
+        "orchestra/testbench": "^7.0",
         "pestphp/pest": "^1.20",
         "pestphp/pest-plugin-mock": "^1.0"
     },
