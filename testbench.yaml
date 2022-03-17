@@ -1,0 +1,8 @@
+env:
+  - DB_CONNECTION=mysql
+  - DB_DATABASE=dev--authanram_html
+  - DB_USERNAME=
+  - DB_PASSWORD=
+
+providers:
+  - Authanram\Html\Providers\HtmlServiceProvider
