@@ -29,7 +29,22 @@ class Renderer extends AbstractRenderer
             }
 
             if (is_array($element)) {
+                if (is_subclass_of($element['tag'], AbstractElement::class)) {
+                    $instance = new $element['tag'];
+
+                    $element = [
+                        $instance->getTag(),
+                        count($element['attributes'] ?? [])
+                            ? $element['attributes']
+                            : $instance->getAttributes(),
+                        count($element['contents'] ?? [])
+                            ? $element['contents']
+                            : $instance->getContents(),
+                    ];
+                }
+
                 $rendered[] = (new Element(...$element))->render();
+
                 continue;
             }
 
