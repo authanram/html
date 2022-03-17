@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Authanram\Html\Plugins\BladeRendererPlugin;
 use Authanram\Html\Renderer;
 use Authanram\Html\Tests\TestFiles\TestElement;
+use Authanram\Html\Tests\TestFiles\TestElementWithIgnoredPlugins;
 use Authanram\Html\Tests\TestFiles\TestPlugin;
 
 it('renders', function (): void {
@@ -41,5 +42,18 @@ it('renders with plugins', function (): void {
 
     $result = $renderer->render('x-html::test', ['text' => 'value'], ['foobar']);
 
-    expect($result)->toEqual("<div data-testplugin><span>value: foobar</span></div>");
+    expect($result)->toEqual('<div data-testplugin><span>value: foobar</span></div>');
+});
+
+it('renders with ignored plugins', function (): void {
+    $renderer = (new Renderer())->setPlugins([
+        BladeRendererPlugin::class,
+        TestPlugin::class,
+    ]);
+
+    $result = $renderer->render(TestElementWithIgnoredPlugins::class);
+
+    expect($result)->toEqual(
+        '<div><span><span class="purple">foo: <span data-x="bar">qux</span></span></span></div>',
+    );
 });

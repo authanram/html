@@ -8,6 +8,8 @@ use InvalidArgumentException;
 
 class Element
 {
+    public static array $pluginsIgnore = [];
+
     public static string $defaultTag = 'div';
 
     protected string $tag;

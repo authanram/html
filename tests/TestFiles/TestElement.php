@@ -16,6 +16,6 @@ class TestElement extends Element
 
     protected array $contents = [
         'foo: ',
-        ['span', ['data-x' => 'bar'], ['qux']],
+        ['tag' => 'span', 'attributes' => ['data-x' => 'bar'], 'contents' => ['qux']],
     ];
 }
