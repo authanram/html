@@ -22,40 +22,37 @@ class Renderer extends AbstractRenderer
     {
         $rendered = [];
 
+        $isElement = fn ($element) => is_object($element)
+            && is_subclass_of($element::class, AbstractElement::class);
+
         foreach ($elements as $element) {
-            if (is_string($element)) {
-                $rendered[] = $element;
-                continue;
-            }
-
-            if (is_array($element)) {
-                if (is_subclass_of($element['tag'], AbstractElement::class)) {
-                    $instance = new $element['tag'];
-
-                    $element = [
-                        $instance->getTag(),
-                        count($element['attributes'] ?? [])
-                            ? $element['attributes']
-                            : $instance->getAttributes(),
-                        count($element['contents'] ?? [])
-                            ? $element['contents']
-                            : $instance->getContents(),
-                    ];
-                }
-
-                $rendered[] = (new Element(...$element))->render();
-
-                continue;
-            }
-
-            if (is_object($element) && is_subclass_of($element::class, AbstractElement::class)) {
-                $rendered[] = $element->render();
-                continue;
-            }
-
-            throw new InvalidArgumentException('Invalid element:'.print_r($element));
+            $rendered[] = match (true) {
+                is_string($element) => $element,
+                is_array($element) => static::renderFromArray($element),
+                $isElement($element) => $element->render(),
+                default => throw new InvalidArgumentException('Invalid element: '.print_r($element)),
+            };
         }
 
         return $rendered;
+    }
+
+    protected static function renderFromArray(array $element): string
+    {
+        if (is_subclass_of($element['tag'], AbstractElement::class)) {
+            $instance = new $element['tag'];
+
+            $element = [
+                $instance->getTag(),
+                count($element['attributes'] ?? [])
+                    ? $element['attributes']
+                    : $instance->getAttributes(),
+                count($element['contents'] ?? [])
+                    ? $element['contents']
+                    : $instance->getContents(),
+            ];
+        }
+
+        return (new Element(...$element))->render();
     }
 }
