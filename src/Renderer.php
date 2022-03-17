@@ -4,34 +4,43 @@ declare(strict_types=1);
 
 namespace Authanram\Html;
 
+use InvalidArgumentException;
 use Spatie\HtmlElement\HtmlElement as SpatieHtmlElement;
 
 class Renderer extends AbstractRenderer
 {
-    public function render(string $tag, array $attributes = [], array $contents = []): string
+    public function render(AbstractElement $element): string
     {
-        $arguments = ['tag' => $tag, 'attributes' => $attributes, 'contents' => $contents];
+        return trim(SpatieHtmlElement::render(
+            $element->getTag(),
+            $element->getAttributes(),
+            $this->renderContents($element->getContents()),
+        ));
+    }
 
-        $plugins = $this->plugins;
+    protected function renderContents(array $elements): array
+    {
+        $rendered = [];
 
-        if (static::isElement($tag)) {
-            /** @noinspection PhpUndefinedFieldInspection */
-            $this->setPlugins($plugins, $tag::$pluginsIgnore);
+        foreach ($elements as $element) {
+            if (is_string($element)) {
+                $rendered[] = $element;
+                continue;
+            }
 
-            $arguments = static::mergeArguments($arguments, (new $tag)->toArray());
+            if (is_array($element)) {
+                $rendered[] = (new Element(...$element))->render();
+                continue;
+            }
+
+            if (is_object($element) && is_subclass_of($element::class, AbstractElement::class)) {
+                $rendered[] = $element->render();
+                continue;
+            }
+
+            throw new InvalidArgumentException('Invalid element:'.print_r($element));
         }
 
-        $arguments['contents'] = $this->renderContents($arguments['contents']);
-
-        $html = trim(SpatieHtmlElement::render(...$arguments));
-
-        /** @var AbstractPlugin $plugin */
-        foreach ($this->plugins as $plugin) {
-            $html = $plugin->render(trim($html));
-        }
-
-        $this->setPlugins($plugins);
-
-        return $html;
+        return $rendered;
     }
 }

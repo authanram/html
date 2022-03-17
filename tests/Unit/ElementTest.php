@@ -3,16 +3,17 @@
 declare(strict_types=1);
 
 use Authanram\Html\Element;
-use Authanram\Html\Tests\TestFiles\TestElement;
 
 it('renders', function (): void {
-    $result = (new Element('p', ['class' => 'red'], ['text']))->render();
+    $element = new Element('div', ['class' => 'green'], [
+        new Element('span', ['class' => 'yellow'], ['foo']),
+        ['span', ['class' => 'blue'], ['bar']],
+        'baz',
+    ]);
 
-    expect($result)->toEqual('<p class="red">text</p>');
-});
+    $result = $element->render();
 
-it('renders custom element', function (): void {
-    $result = (new TestElement())->render();
-
-    expect($result)->toEqual('<span class="purple">foo: <span data-x="bar">qux</span></span>');
+    expect($result)->toEqual(
+        '<div class="green"><span class="yellow">foo</span><span class="blue">bar</span>baz</div>',
+    );
 });
