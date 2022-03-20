@@ -9,13 +9,51 @@ use Spatie\HtmlElement\HtmlElement as SpatieHtmlElement;
 
 class Renderer extends AbstractRenderer
 {
+    /** @var AbstractRendererPlugin[] */
+    protected array $plugins = [];
+
+    public function getPlugins(): array
+    {
+        return $this->plugins;
+    }
+
+    public function setPlugins(array $plugins): static
+    {
+        foreach ($plugins  as $plugin) {
+            $this->addPlugin($plugin);
+        }
+
+        return $this;
+    }
+
+    public function addPlugin(AbstractRendererPlugin|string $plugin): static
+    {
+        if (is_subclass_of($plugin, AbstractRendererPlugin::class) === false) {
+            $plugin = is_object($plugin) ? $plugin::class : $plugin;
+
+            throw new InvalidArgumentException(
+                'Class "'.$plugin.'" must be a subclass of: '.AbstractRendererPlugin::class,
+            );
+        }
+
+        $this->plugins[] = $plugin;
+
+        return $this;
+    }
+
     public function render(AbstractElement $element): string
     {
-        return trim(SpatieHtmlElement::render(
+        $html =  trim(SpatieHtmlElement::render(
             $element->getTag(),
             $element->getAttributes(),
             $this->renderContents($element->getContents()),
         ));
+
+        foreach ($this->plugins as $plugin) {
+            $html = $plugin::render($html);
+        }
+
+        return $html;
     }
 
     protected function renderContents(array $elements): array

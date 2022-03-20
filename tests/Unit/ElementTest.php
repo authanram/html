@@ -3,7 +3,8 @@
 declare(strict_types=1);
 
 use Authanram\Html\Element;
-use Authanram\Html\Tests\TestFiles\TestElement;
+use Authanram\Html\Renderer;
+use Authanram\Html\Tests\TestFiles;
 
 it('renders', function (): void {
     $element = new Element('div', ['class' => 'green'], []);
@@ -41,7 +42,7 @@ it('renders contents from array', function (): void {
 
 it('renders contents from array with custom tag', function (): void {
     $element = new Element('div', ['class' => 'green'], [
-        ['tag' => TestElement::class, 'attributes' => ['class' => 'orange']],
+        ['tag' => TestFiles\TestElement::class, 'attributes' => ['class' => 'orange']],
     ]);
 
     $result = $element->render();
@@ -60,5 +61,23 @@ it('renders contents from string', function (): void {
 
     expect($result)->toEqual(
         '<div class="green">baz</div>',
+    );
+});
+
+it('renders with plugin', function (): void {
+    $element = new Element('div', ['class' => 'green'], [
+        'baz',
+    ]);
+
+    $renderer = new Renderer();
+
+    $renderer->addPlugin(TestFiles\TestRendererPlugin::class);
+
+    $element->setRenderer($renderer);
+
+    $result = $element->render();
+
+    expect($result)->toEqual(
+        '<div class="test-render-plugin"><div class="green">baz</div></div>',
     );
 });
