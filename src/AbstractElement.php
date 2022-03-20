@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Authanram\Html;
 
+use Authanram\Html\Plugins\TrimRendererPlugin;
+
 abstract class AbstractElement
 {
     protected AbstractRenderer $renderer;
@@ -14,7 +16,8 @@ abstract class AbstractElement
 
     public function getRenderer(): AbstractRenderer
     {
-        $this->renderer ??= new Renderer();
+        $this->renderer ??= (new Renderer())
+            ->addPlugin(TrimRendererPlugin::class);
 
         return $this->renderer;
     }

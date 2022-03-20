@@ -43,11 +43,11 @@ class Renderer extends AbstractRenderer
 
     public function render(AbstractElement $element): string
     {
-        $html =  trim(SpatieHtmlElement::render(
+        $html = SpatieHtmlElement::render(
             $element->getTag(),
             $element->getAttributes(),
             $this->renderContents($element->getContents()),
-        ));
+        );
 
         foreach ($this->plugins as $plugin) {
             $html = $plugin->render($html);
