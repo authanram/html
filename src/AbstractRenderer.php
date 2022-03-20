@@ -10,7 +10,7 @@ abstract class AbstractRenderer
 
     abstract public function setPlugins(array $plugins): static;
 
-    abstract public function addPlugin(AbstractRendererPlugin|string $plugin): static;
+    abstract public function addPlugin(AbstractRendererPlugin|string $plugin, ?string $alias = null): static;
 
     abstract public function render(AbstractElement $element): string;
 }

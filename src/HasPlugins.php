@@ -27,17 +27,23 @@ trait HasPlugins
         return $this;
     }
 
-    public function addPlugin(AbstractRendererPlugin|string $plugin): static
+    public function addPlugin(AbstractRendererPlugin|string $plugin, ?string $alias = null): static
     {
-        if (is_subclass_of($plugin, AbstractRendererPlugin::class) === false) {
-            $plugin = is_object($plugin) ? $plugin::class : $plugin;
+        $classname = is_object($plugin) ? $plugin::class : $plugin;
 
+        if (is_subclass_of($classname, AbstractRendererPlugin::class) === false) {
             throw new InvalidArgumentException(
-                'Class "'.$plugin.'" must be a subclass of: '.AbstractRendererPlugin::class,
+                'Class "'.$classname.'" must be a subclass of: '.AbstractRendererPlugin::class,
             );
         }
 
-        $this->plugins[] = is_string($plugin) ? new $plugin : $plugin;
+        $instance = is_string($plugin) ? new $plugin : $plugin;
+
+        if (is_null($alias)) {
+            $this->plugins[] = $instance;
+        } else {
+            $this->plugins[$alias] = $instance;
+        }
 
         return $this;
     }

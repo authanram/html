@@ -12,9 +12,9 @@ beforeEach(function () {
     ]);
 
     $this->renderer = (new Renderer())
-        ->addPlugin(new TestFiles\TestRendererPluginOne('plugin-one'))
+        ->addPlugin(new TestFiles\TestRendererPluginOne('plugin-one'), 'plugin-one')
         ->addPlugin(new TestFiles\TestRendererPluginTwo())
-        ->addPlugin(new TestFiles\TestRendererPluginThree());
+        ->addPlugin(new TestFiles\TestRendererPluginThree(), 'plugin-three');
 });
 
 it('renders with plugins', function (): void {
@@ -24,6 +24,19 @@ it('renders with plugins', function (): void {
 
     expect($result)->toEqual(
         '<div class="plugin-three"><div class="plugin-two"><div class="plugin-one"><div class="green">baz</div></div></div></div>',
+    );
+});
+
+it('renders with replaced plugins', function (): void {
+    $this->renderer->addPlugin(new TestFiles\TestRendererPluginOne('plugin-one-replaced'), 'plugin-one');
+    $this->renderer->addPlugin(new TestFiles\TestRendererPluginOne('plugin-three-replaced'), 'plugin-three');
+
+    $this->element->setRenderer($this->renderer);
+
+    $result = $this->element->render();
+
+    expect($result)->toEqual(
+        '<div class="plugin-three-replaced"><div class="plugin-two"><div class="plugin-one-replaced"><div class="green">baz</div></div></div></div>',
     );
 });
 
