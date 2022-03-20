@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Authanram\Html\Element;
-use Authanram\Html\Renderer;
 use Authanram\Html\Tests\TestFiles;
 
 it('renders', function (): void {
@@ -61,23 +60,5 @@ it('renders contents from string', function (): void {
 
     expect($result)->toEqual(
         '<div class="green">baz</div>',
-    );
-});
-
-it('renders with plugin', function (): void {
-    $element = new Element('div', ['class' => 'green'], [
-        'baz',
-    ]);
-
-    $plugin = new TestFiles\TestRendererPlugin('test-render-plugin');
-
-    $renderer = (new Renderer())->addPlugin($plugin);
-
-    $element->setRenderer($renderer);
-
-    $result = $element->render();
-
-    expect($result)->toEqual(
-        '<div class="test-render-plugin"><div class="green">baz</div></div>',
     );
 });

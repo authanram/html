@@ -6,7 +6,7 @@ namespace Authanram\Html\Tests\TestFiles;
 
 use Authanram\Html\AbstractRendererPlugin;
 
-class TestRendererPlugin extends AbstractRendererPlugin
+class TestRendererPluginOne extends AbstractRendererPlugin
 {
     public function __construct(protected string $classAttribute)
     {
