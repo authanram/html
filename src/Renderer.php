@@ -9,7 +9,7 @@ use Spatie\HtmlElement\HtmlElement as SpatieHtmlElement;
 
 class Renderer extends AbstractRenderer
 {
-    use HasPlugins;
+    use Concerns\HasPlugins;
 
     public function render(AbstractElement $element): string
     {
@@ -32,7 +32,7 @@ class Renderer extends AbstractRenderer
         foreach ($elements as $element) {
             $rendered[] = match (true) {
                 is_string($element) => $element,
-                is_array($element) => static::renderFromArray($element),
+                is_array($element) => static::renderArrayElement($element),
                 $isElement($element) => $element->render(),
                 default => throw new InvalidArgumentException('Invalid element: '.print_r($element)),
             };
@@ -41,7 +41,7 @@ class Renderer extends AbstractRenderer
         return $rendered;
     }
 
-    protected static function renderFromArray(array $element): string
+    protected static function renderArrayElement(array $element): string
     {
         if (is_subclass_of($element['tag'], AbstractElement::class)) {
             $instance = new $element['tag'];

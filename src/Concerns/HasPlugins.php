@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Authanram\Html;
+namespace Authanram\Html\Concerns;
 
+use Authanram\Html\AbstractRendererPlugin;
 use InvalidArgumentException;
 
 trait HasPlugins
