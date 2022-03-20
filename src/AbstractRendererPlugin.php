@@ -6,5 +6,5 @@ namespace Authanram\Html;
 
 abstract class AbstractRendererPlugin
 {
-    abstract public static function render(string $html): string;
+    abstract public function render(string $html): string;
 }

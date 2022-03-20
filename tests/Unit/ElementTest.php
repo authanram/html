@@ -69,9 +69,9 @@ it('renders with plugin', function (): void {
         'baz',
     ]);
 
-    $renderer = new Renderer();
+    $plugin = new TestFiles\TestRendererPlugin('test-render-plugin');
 
-    $renderer->addPlugin(TestFiles\TestRendererPlugin::class);
+    $renderer = (new Renderer())->addPlugin($plugin);
 
     $element->setRenderer($renderer);
 

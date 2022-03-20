@@ -36,7 +36,7 @@ class Renderer extends AbstractRenderer
             );
         }
 
-        $this->plugins[] = $plugin;
+        $this->plugins[] = is_string($plugin) ? new $plugin : $plugin;
 
         return $this;
     }
@@ -50,7 +50,7 @@ class Renderer extends AbstractRenderer
         ));
 
         foreach ($this->plugins as $plugin) {
-            $html = $plugin::render($html);
+            $html = $plugin->render($html);
         }
 
         return $html;

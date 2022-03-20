@@ -8,8 +8,12 @@ use Authanram\Html\AbstractRendererPlugin;
 
 class TestRendererPlugin extends AbstractRendererPlugin
 {
-    public static function render(string $html): string
+    public function __construct(protected string $classAttribute)
     {
-        return '<div class="test-render-plugin">'.$html.'</div>';
+    }
+
+    public function render(string $html): string
+    {
+        return '<div class="'.$this->classAttribute.'">'.$html.'</div>';
     }
 }
