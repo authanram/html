@@ -6,8 +6,10 @@ namespace Authanram\Html;
 
 abstract class AbstractRenderer
 {
+    /** @return AbstractRendererPlugin[] */
     abstract public function getPlugins(): array;
 
+    /** @param AbstractRendererPlugin[] $plugins */
     abstract public function setPlugins(array $plugins): static;
 
     abstract public function addPlugin(AbstractRendererPlugin|string $plugin, ?string $alias = null): static;

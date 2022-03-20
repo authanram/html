@@ -15,6 +15,20 @@ it('renders', function (): void {
     );
 });
 
+it('renders with plugins', function (): void {
+    $element = new Element('div', ['class' => 'green'], []);
+
+    $result = $element->render([
+        new TestFiles\TestRendererPluginOne('plugin-one'),
+        new TestFiles\TestRendererPluginTwo(),
+        new TestFiles\TestRendererPluginThree(),
+    ]);
+
+    expect($result)->toEqual(
+        '<div class="plugin-three"><div class="plugin-two"><div class="plugin-one"><div class="green"></div></div></div></div>',
+    );
+});
+
 it('renders contents from element', function (): void {
     $element = new Element('div', ['class' => 'green'], [
         new Element('span', ['class' => 'yellow'], ['foo']),

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Authanram\Html\Concerns;
 
 use Authanram\Html\AbstractRenderer;
+use Authanram\Html\AbstractRendererPlugin;
 use Authanram\Html\Renderer;
 
 trait HasRenderer
@@ -25,8 +26,15 @@ trait HasRenderer
         return $this;
     }
 
-    public function render(): string
+    /** @param AbstractRendererPlugin[] $plugins */
+    public function render(array $plugins = []): string
     {
-        return $this->getRenderer()->render($this);
+        $renderer = $this->getRenderer();
+
+        foreach ($plugins as $plugin) {
+            $renderer->addPlugin($plugin);
+        }
+
+        return $renderer->render($this);
     }
 }

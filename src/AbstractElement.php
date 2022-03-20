@@ -7,9 +7,15 @@ namespace Authanram\Html;
 abstract class AbstractElement
 {
     abstract public function getTag(): string;
+
     abstract public function getAttributes(): array;
+
     abstract public function getContents(): array;
+
     abstract public function getRenderer(): AbstractRenderer;
+
     abstract public function setRenderer(AbstractRenderer $renderer): static;
-    abstract public function render(): string;
+
+    /** @param AbstractRendererPlugin[] $plugins */
+    abstract public function render(array $plugins = []): string;
 }
