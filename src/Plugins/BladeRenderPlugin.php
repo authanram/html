@@ -35,7 +35,7 @@ class BladeRenderPlugin extends RenderPlugin
 
         $element->setAttributes($attributes);
 
-        return parent::handle($element);
+        return $element;
     }
 
     public function render(string $html): string

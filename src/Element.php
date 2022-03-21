@@ -22,6 +22,11 @@ class Element extends AbstractElement
             ->setContents($contents ?? $this->getContents());
     }
 
+    public function boot(): static
+    {
+        return $this;
+    }
+
     public function getTag(): string
     {
         return $this->tag ?? 'div';

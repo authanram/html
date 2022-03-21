@@ -6,6 +6,8 @@ namespace Authanram\Html;
 
 abstract class AbstractElement
 {
+    abstract public function boot(): static;
+
     abstract public function getTag(): string;
 
     abstract public function getAttributes(): array;
