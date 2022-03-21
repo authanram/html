@@ -40,7 +40,8 @@ class Element extends AbstractElement
 
     public function getRenderer(): AbstractRenderer
     {
-        return $this->renderer ??= (new Renderer())->addPlugin(TrimRendererPlugin::class);
+        return $this->renderer ??= (new Renderer())
+            ->addPlugin(TrimRendererPlugin::class);
     }
 
     public function setTag(string $tag): static
