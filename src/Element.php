@@ -10,8 +10,6 @@ class Element extends AbstractElement
 {
     use Concerns\HasRenderer;
 
-    public static string $defaultTag = 'div';
-
     protected string $tag;
     protected array $attributes;
     protected array $contents;
@@ -19,24 +17,24 @@ class Element extends AbstractElement
     public function __construct(?string $tag = null, ?array $attributes = null, ?array $contents = null)
     {
         $this
-            ->setTag($tag ?? $this->tag ?? static::$defaultTag)
-            ->setAttributes($attributes ?? $this->attributes ?? [])
-            ->setContents($contents ?? $this->contents ?? []);
+            ->setTag($tag ?? $this->getTag())
+            ->setAttributes($attributes ?? $this->getAttributes())
+            ->setContents($contents ?? $this->getContents());
     }
 
     public function getTag(): string
     {
-        return $this->tag;
+        return $this->tag ?? 'div';
     }
 
     public function getAttributes(): array
     {
-        return $this->attributes;
+        return $this->attributes ?? [];
     }
 
     public function getContents(): array
     {
-        return $this->contents;
+        return $this->contents ?? [];
     }
 
     public function getRenderer(): AbstractRenderer
