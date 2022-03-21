@@ -22,7 +22,7 @@ class BladeRenderPlugin extends RenderPlugin
         $attributes = $element->getAttributes();
 
         foreach ($attributes as $key => $value) {
-            if ($key[0] !== ':') {
+            if (is_int($key) || $key[0] !== ':') {
                 continue;
             }
 
