@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Authanram\Html\Tests\TestFiles;
 
-use Authanram\Html\AbstractRendererPlugin;
+use Authanram\Html\RenderPlugin;
 
-class TestRendererPluginThree extends AbstractRendererPlugin
+class TestRendererPluginThree extends RenderPlugin
 {
     public function render(string $html): string
     {

@@ -1,3 +1,3 @@
-@props(['text'])
+@props(['text', 'data' => []])
 
-<span>{{ $text }}: {{ $slot }}</span>
+<span>{{ $text }}: {{ $slot }} -- {{ $data['foo'] }}</span>

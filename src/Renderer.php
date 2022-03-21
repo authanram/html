@@ -19,7 +19,7 @@ class Renderer extends AbstractRenderer
             $this->renderContents($element->getContents()),
         );
 
-        return $this->pluginsHandle($html);
+        return $this->pluginsHandle($html, $element);
     }
 
     protected function renderContents(array $elements): array

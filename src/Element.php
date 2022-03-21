@@ -18,9 +18,10 @@ class Element extends AbstractElement
 
     public function __construct(?string $tag = null, ?array $attributes = null, ?array $contents = null)
     {
-        $this->tag = $tag ?? $this->tag ?? static::$defaultTag;
-        $this->attributes = $attributes ?? $this->attributes ?? [];
-        $this->contents = $contents ?? $this->contents ?? [];
+        $this
+            ->setTag($tag ?? $this->tag ?? static::$defaultTag)
+            ->setAttributes($attributes ?? $this->attributes ?? [])
+            ->setContents($contents ?? $this->contents ?? []);
     }
 
     public function getTag(): string
@@ -44,5 +45,26 @@ class Element extends AbstractElement
             ->addPlugin(TrimRendererPlugin::class);
 
         return $this->renderer;
+    }
+
+    public function setTag(string $tag): static
+    {
+        $this->tag = $tag;
+
+        return $this;
+    }
+
+    public function setAttributes(array $attributes): static
+    {
+        $this->attributes = $attributes;
+
+        return $this;
+    }
+
+    public function setContents(array $contents): static
+    {
+        $this->contents = $contents;
+
+        return $this;
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Authanram\Html\Concerns;
 
+use Authanram\Html\AbstractElement;
 use Authanram\Html\AbstractRendererPlugin;
 use InvalidArgumentException;
 
@@ -56,14 +57,14 @@ trait HasPlugins
         return $this;
     }
 
-    public function pluginsHandle(string $value): string
+    public function pluginsHandle(string $value, AbstractElement $element): string
     {
         foreach ($this->plugins as $plugin) {
             if (in_array($plugin::class, $this->pluginsIgnored, true)) {
                 continue;
             }
 
-            $value = $plugin->render($value);
+            $value = $plugin->setElement($element)->render($value);
         }
 
         return $value;
