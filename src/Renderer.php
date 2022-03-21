@@ -45,17 +45,15 @@ class Renderer extends AbstractRenderer
 
     protected static function renderArrayElement(array $element): string
     {
-        if (is_subclass_of($element['tag'], AbstractElement::class)) {
-            $instance = new $element['tag'];
+        $tag = $element['tag'] ?? 'div';
+
+        if (is_subclass_of($tag, AbstractElement::class)) {
+            $instance = new $tag();
 
             $element = [
                 $instance->getTag(),
-                count($element['attributes'] ?? [])
-                    ? $element['attributes']
-                    : $instance->getAttributes(),
-                count($element['contents'] ?? [])
-                    ? $element['contents']
-                    : $instance->getContents(),
+                $element['attributes'] ?? $instance->getAttributes(),
+                $element['contents'] ?? $instance->getContents(),
             ];
         }
 
