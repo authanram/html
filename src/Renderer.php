@@ -13,13 +13,15 @@ class Renderer extends AbstractRenderer
 
     public function render(AbstractElement $element): string
     {
+        $element = $this->pluginsHandle($element);
+
         $html = SpatieHtmlElement::render(
             $element->getTag(),
             $element->getAttributes(),
             $this->renderContents($element->getContents()),
         );
 
-        return $this->pluginsHandle($html, $element);
+        return $this->pluginsRender($html, $element);
     }
 
     protected function renderContents(array $elements): array

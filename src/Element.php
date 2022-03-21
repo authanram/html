@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Authanram\Html;
 
+use Authanram\Html\Plugins\BladeRenderPlugin;
 use Authanram\Html\Plugins\TrimRendererPlugin;
 
 class Element extends AbstractElement

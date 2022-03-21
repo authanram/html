@@ -2,16 +2,20 @@
 
 declare(strict_types=1);
 
-use Authanram\Html\BladeElement;
+use Authanram\Html\Element;
+use Authanram\Html\Plugins\BladeRenderPlugin;
 
 it('renders', function (): void {
-    $element = new BladeElement(
-        'x-html::test', [
+    $element = new Element(
+        'x-html::test',
+        [
             'text' => 'foobar',
-            'data' => ['foo' => 'bar'],
+            ':data' => ['foo' => 'bar'],
         ],
         ['quux']
     );
+
+    $element->getRenderer()->addPlugin(BladeRenderPlugin::class);
 
     $result = $element->render();
 

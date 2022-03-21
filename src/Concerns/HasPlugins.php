@@ -17,7 +17,9 @@ trait HasPlugins
 
     public function getPlugins(): array
     {
-        return $this->plugins;
+        return array_filter($this->plugins, function ($plugin) {
+            return in_array($plugin::class, $this->pluginsIgnored, true) === false;
+        });
     }
 
     public function setPlugins(array $plugins): static
@@ -25,6 +27,13 @@ trait HasPlugins
         foreach ($plugins as $plugin) {
             $this->addPlugin($plugin);
         }
+
+        return $this;
+    }
+
+    public function setPluginsIgnored(array $pluginsIgnored): static
+    {
+        $this->pluginsIgnored = $pluginsIgnored;
 
         return $this;
     }
@@ -50,17 +59,27 @@ trait HasPlugins
         return $this;
     }
 
-    public function setPluginsIgnored(array $pluginsIgnored): static
+    public function pluginsHandle(AbstractElement $value): AbstractElement
     {
-        $this->pluginsIgnored = $pluginsIgnored;
+        $plugins = $this->getPlugins();
 
-        return $this;
+        foreach ($plugins as $plugin) {
+            if ($plugin->authorize($value) === false) {
+                continue;
+            }
+
+            $value = $plugin->handle($value);
+        }
+
+        return $value;
     }
 
-    public function pluginsHandle(string $value, AbstractElement $element): string
+    public function pluginsRender(string $value, AbstractElement $element): string
     {
-        foreach ($this->plugins as $plugin) {
-            if (in_array($plugin::class, $this->pluginsIgnored, true)) {
+        $plugins = $this->getPlugins();
+
+        foreach ($plugins as $plugin) {
+            if ($plugin->authorize($element) === false) {
                 continue;
             }
 
