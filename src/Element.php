@@ -17,37 +17,30 @@ class Element extends AbstractElement
     public function __construct(?string $tag = null, ?array $attributes = null, ?array $contents = null)
     {
         $this
-            ->setTag($tag ?? $this->getTag())
-            ->setAttributes($attributes ?? $this->getAttributes())
-            ->setContents($contents ?? $this->getContents());
-    }
-
-    public function boot(): static
-    {
-        return $this;
+            ->setTag($tag ?? $this->tag())
+            ->setAttributes($attributes ?? $this->attributes())
+            ->setContents($contents ?? $this->contents())
+            ->setRenderer($this->renderer());
     }
 
     public function getTag(): string
     {
-        return $this->tag ?? 'div';
+        return $this->tag ??= 'div';
     }
 
     public function getAttributes(): array
     {
-        return $this->attributes ?? [];
+        return $this->attributes ??= [];
     }
 
     public function getContents(): array
     {
-        return $this->contents ?? [];
+        return $this->contents ??= [];
     }
 
     public function getRenderer(): AbstractRenderer
     {
-        $this->renderer ??= (new Renderer())
-            ->addPlugin(TrimRendererPlugin::class);
-
-        return $this->renderer;
+        return $this->renderer ??= (new Renderer())->addPlugin(TrimRendererPlugin::class);
     }
 
     public function setTag(string $tag): static
@@ -69,5 +62,25 @@ class Element extends AbstractElement
         $this->contents = $contents;
 
         return $this;
+    }
+
+    public function tag(): string
+    {
+        return $this->getTag();
+    }
+
+    public function attributes(): array
+    {
+        return $this->getAttributes();
+    }
+
+    public function contents(): array
+    {
+        return $this->getContents();
+    }
+
+    public function renderer(): AbstractRenderer
+    {
+        return $this->getRenderer();
     }
 }
