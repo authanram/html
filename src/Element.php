@@ -11,16 +11,20 @@ class Element extends AbstractElement
     use Concerns\HasRenderer;
 
     protected string $tag;
+
     protected array $attributes;
+
     protected array $contents;
 
     public function __construct(?string $tag = null, ?array $attributes = null, ?array $contents = null)
     {
-        $this
-            ->setTag($tag ?? $this->tag())
-            ->setAttributes($attributes ?? $this->attributes())
-            ->setContents($contents ?? $this->contents())
-            ->setRenderer($this->renderer());
+        $this->tag = $tag ?? $this->getTag();
+
+        $this->attributes = $attributes ?? $this->getAttributes();
+
+        $this->contents = $contents ?? $this->getContents();
+
+        $this->renderer = $this->renderer();
     }
 
     public function getTag(): string

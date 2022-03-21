@@ -29,6 +29,12 @@ trait HasRenderer
     /** @param AbstractRendererPlugin[] $plugins */
     public function render(array $plugins = []): string
     {
+        $this->setTag($this->tag());
+
+        $this->setAttributes($this->attributes());
+
+        $this->setContents($this->contents());
+
         $renderer = $this->getRenderer();
 
         foreach ($plugins as $plugin) {
