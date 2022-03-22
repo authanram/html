@@ -34,7 +34,7 @@ class Renderer extends AbstractRenderer
         foreach ($elements as $element) {
             $rendered[] = match (true) {
                 is_string($element) => $element,
-                is_array($element) => static::renderArrayElement($element),
+                is_array($element) => static::renderFromArray($element),
                 $isElement($element) => $element->render(),
                 default => throw new InvalidArgumentException('Invalid element: '.print_r($element)),
             };
@@ -43,7 +43,7 @@ class Renderer extends AbstractRenderer
         return $rendered;
     }
 
-    protected static function renderArrayElement(array $element): string
+    public static function renderFromArray(array $element): string
     {
         $tag = $element['tag'] ?? 'div';
 

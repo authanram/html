@@ -10,14 +10,29 @@ class Element extends AbstractElement
 {
     use Concerns\HasRenderer;
 
+    public static string $tagDefault = 'div';
+
     protected string $tag;
 
     protected array $attributes;
 
     protected array $contents;
 
-    public function __construct(?string $tag = null, ?array $attributes = null, ?array $contents = null)
-    {
+    public static function make(
+        ?string $tag = null,
+        ?array $attributes = null,
+        array|string|null $contents = null
+    ): static {
+        return new static($tag, $attributes, $contents);
+    }
+
+    public function __construct(
+        ?string $tag = null,
+        ?array $attributes = null,
+        array|string|null $contents = null,
+    ) {
+        $contents = is_string($contents) ? [$contents] : $contents;
+
         $this->tag = $tag ?? $this->getTag();
 
         $this->attributes = $attributes ?? $this->getAttributes();
@@ -29,7 +44,7 @@ class Element extends AbstractElement
 
     public function getTag(): string
     {
-        return $this->tag ??= 'div';
+        return $this->tag ??= static::$tagDefault;
     }
 
     public function getAttributes(): array
@@ -62,9 +77,11 @@ class Element extends AbstractElement
         return $this;
     }
 
-    public function setContents(array $contents): static
+    public function setContents(array|string ...$contents): static
     {
-        $this->contents = $contents;
+        foreach ($contents as $content) {
+            $this->contents = is_string($content) ? [$content] : $content;
+        }
 
         return $this;
     }

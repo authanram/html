@@ -6,13 +6,37 @@ use Authanram\Html\Element;
 use Authanram\Html\Tests\TestFiles;
 
 it('renders', function (): void {
-    $element = new Element('div', ['class' => 'green'], []);
+    expect((new Element())->render())->toEqual('<div></div>');
 
-    $result = $element->render();
-
-    expect($result)->toEqual(
-        '<div class="green"></div>',
+    expect(
+        (new Element())
+            ->setTag('span')
+            ->setAttributes(['class' => 'red'])
+            ->setContents(['text'])
+            ->render(),
+    )->toEqual(
+        '<span class="red">text</span>',
     );
+
+    expect(
+        (new Element('div', ['class' => 'green'], 'text'))->render()
+    )->toEqual(
+        '<div class="green">text</div>',
+    );
+});
+
+it('renders array contents', function (): void {
+    $expectation = '<div>text&nbsp;array !</div>';
+
+    $contents = ['text', '&nbsp;', 'array', ' ', '!'];
+
+    $result = (new Element(null, null, $contents))->render();
+
+    expect($result)->toEqual($expectation);
+
+    $result = (new Element)->setContents($contents)->render();
+
+    expect($result)->toEqual($expectation);
 });
 
 it('renders with plugins', function (): void {
