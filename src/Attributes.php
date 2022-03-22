@@ -57,11 +57,9 @@ class Attributes
         return $this;
     }
 
-    public function merge(Attributes|array $attributes): static
+    public function merge(array $attributes): static
     {
-        $this->attributes = is_array($attributes)
-            ? array_merge($this->attributes, $attributes)
-            : array_merge($this->attributes, $attributes->toArray());
+        $this->attributes = array_merge($this->attributes, $attributes);
 
         return $this;
     }

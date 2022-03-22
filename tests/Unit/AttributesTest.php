@@ -149,6 +149,19 @@ it('pipes', function (): void {
 
     expect($this->instance->toHtml())
         ->toEqual('foo="bar" baz');
+
+    $exceptionMessage = '';
+
+    try {
+        $this->instance->pipe(fn () => []);
+    } catch (TypeError $exception) {
+        $exceptionMessage = $exception->getMessage();
+    }
+
+    expect($exceptionMessage)
+        ->toEqual(
+            'Return value of "pipe" must be type of "Authanram\Html\Attributes", got: array',
+        );
 });
 
 it('renders', function (): void {
