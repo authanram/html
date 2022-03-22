@@ -66,10 +66,10 @@ it('sets attribute', function (): void {
 
 it('is aware of forgotten keys', function (): void {
     expect($this->instance->forget('foo')->toHtml())
-        ->toEqual('bar="foo bar baz" baz data-foo');
+        ->toEqual('quux="0" bar="foo bar baz" baz data-foo');
 
     expect($this->instance->forget(0)->toHtml())
-        ->toEqual('bar="foo bar baz" data-foo');
+        ->toEqual('quux="0" bar="foo bar baz" data-foo');
 
     expect($this->instance->forget(['bar', 'data-foo'])->getAttributes())
         ->toEqual(['quux' => false]);
@@ -77,12 +77,12 @@ it('is aware of forgotten keys', function (): void {
 
 it('is aware of buffer: except', function (): void {
     expect($this->instance->except('foo')->toHtml())
-        ->toEqual('bar="foo bar baz" baz data-foo');
+        ->toEqual('quux="0" bar="foo bar baz" baz data-foo');
 
     expect($this->instance->except(['foo', 0])->toHtml())
-        ->toEqual('bar="foo bar baz" data-foo');
+        ->toEqual('quux="0" bar="foo bar baz" data-foo');
 
-    expect($this->instance->except(['foo', 'data-foo'])->toHtml())
+    expect($this->instance->except(['quux', 'foo', 'data-foo'])->toHtml())
         ->toEqual('bar="foo bar baz" baz');
 });
 
@@ -98,10 +98,10 @@ it('is aware of previous buffer', function (): void {
     $instance = clone $this->instance;
 
     expect($instance->only('foo')->except('foo')->toHtml())
-        ->toEqual('bar="foo bar baz" baz data-foo');
+        ->toEqual('quux="0" bar="foo bar baz" baz data-foo');
 
     expect($instance->only(['foo', 'data-foo'])->except(['foo', 'data-foo'])->toHtml())
-        ->toEqual('bar="foo bar baz" baz');
+        ->toEqual('quux="0" bar="foo bar baz" baz');
 
     expect($instance->except('foo')->only('foo')->toHtml())
         ->toEqual('foo="bar"');
@@ -129,7 +129,7 @@ it('merges', function (): void {
         ->toEqual(array_merge($this->attributes, $merge));
 
     expect($this->instance->toHtml())
-        ->toEqual('foo="bar" bar="foo bar baz" baz data-foo a="a" z="2"');
+        ->toEqual('quux="0" foo="bar" bar="foo bar baz" baz data-foo a="a" z="2"');
 });
 
 it('pipes', function (): void {
@@ -169,5 +169,5 @@ it('renders', function (): void {
         ->toBeString()->toBeEmpty()->toEqual('');
 
     expect($this->instance->toHtml())
-        ->toEqual('foo="bar" bar="foo bar baz" baz data-foo');
+        ->toEqual('quux="0" foo="bar" bar="foo bar baz" baz data-foo');
 });

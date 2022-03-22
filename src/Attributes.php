@@ -122,27 +122,29 @@ class Attributes
     {
         $attributes = $this->attributesBuffered(true);
 
-        $string = '';
+        $strings = [];
 
         foreach ($attributes as $key => $value) {
+            if (in_array($value, [null, true, ''], true)) {
+                $strings[] = $key;
+                continue;
+            }
+
+            if (is_int($key) && is_scalar($value)) {
+                $strings[] = $value;
+                continue;
+            }
+
             if ($value === false) {
-                continue;
+                $value = 0;
             }
 
-            if ($value === true) {
-                $string .= ' '.$key;
-                continue;
-            }
+            $value = htmlspecialchars((string)$value, ENT_COMPAT);
 
-            if (is_int($key)) {
-                $string .= ' '.$value;
-                continue;
-            }
-
-            $string .= ' '.$key.'="'.str_replace('"', '\\"', trim((string)$value)).'"';
+            $strings[] = "$key=\"$value\"";
         }
 
-        return trim($string);
+        return implode(' ', $strings);
     }
 
     protected function buffer(string $function, array|string $value): void
