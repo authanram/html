@@ -6,7 +6,7 @@ namespace Authanram\Html;
 
 class Element extends AbstractElement
 {
-    use Concerns\HasRenderer;
+    use HasRenderer;
 
     public static string $tagDefault = 'div';
 

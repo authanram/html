@@ -2,10 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Authanram\Html\Concerns;
-
-use Authanram\Html\AbstractRenderer;
-use Authanram\Html\Renderer;
+namespace Authanram\Html;
 
 trait HasRenderer
 {
