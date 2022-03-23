@@ -8,7 +8,9 @@ class AbbreviationParser extends \Spatie\HtmlElement\AbbreviationParser
 {
     public static function parse(string $tag): array
     {
-        $parsed = parent::parse(preg_replace('/\s*/m', '', $tag));
+        $parsed = parent::parse(
+            preg_replace('/\s*/m', '', $tag),
+        );
 
         return [
             'tag' => $parsed['element'],
