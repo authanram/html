@@ -16,6 +16,10 @@ beforeEach(function () {
     $this->instance = Attributes::make($this->attributes);
 });
 
+it('throws if attributes is not an array map', function (): void {
+    new Attributes(['foo', 'bar']);
+})->expectExceptionMessage('Argument "$items" must be an array map.');
+
 it('can be instantiated', function (): void {
     expect((new Attributes())->toArray())
         ->toEqual([]);

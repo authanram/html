@@ -6,7 +6,6 @@ namespace Authanram\Html;
 
 use BadMethodCallException;
 use Illuminate\Support\Collection as IlluminateCollection;
-use InvalidArgumentException;
 use TypeError;
 
 /**
@@ -23,14 +22,12 @@ use TypeError;
 abstract class Collection
 {
     protected static array $collectionMethods = [
-        'add',
         'all',
         'except',
         'forget',
         'get',
         'merge',
         'only',
-        'set',
         'toArray',
     ];
 
@@ -77,10 +74,6 @@ abstract class Collection
 
     public function __construct(array $items = [])
     {
-        if (count($items) && array_is_list($items)) {
-            throw new InvalidArgumentException('$items must be an map');
-        }
-
         $this->items = new IlluminateCollection($items);
     }
 
@@ -91,16 +84,19 @@ abstract class Collection
             static::$methodsVoid,
         );
 
+        $methodForward = 'forward'.ucfirst($name);
+
         if (array_key_exists($name, $methods) === false
             && in_array($name, $methods, true) === false
+            && method_exists($this, $methodForward) === false
         ) {
             throw new BadMethodCallException(
                 'Call to undefined method '.static::class.'::'.$name.'()',
             );
         }
 
-        $result = method_exists($this, 'forward'.ucfirst($name))
-            ? $this->{'forward'.ucfirst($name)}(...$arguments)
+        $result = method_exists($this, $methodForward)
+            ? $this->{$methodForward}(...$arguments)
             : $this->items->{$name}(...$arguments);
 
         if (in_array($name, static::$methodsVoid, true)) {
