@@ -82,7 +82,7 @@ it('merges', function (): void {
 it('pipes', function (): void {
     $this->instance->pipe(function (Attributes $attributes) {
         return $attributes
-            ->only(['foo', 0])
+            ->only(['foo'])
             ->add('a', 'a')
             ->add('z', 2);
     });
