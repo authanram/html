@@ -16,7 +16,7 @@ abstract class AbstractElement
 
     abstract public function setTag(string $tag): static;
 
-    abstract public function setAttributes(array $attributes): static;
+    abstract public function setAttributes(Attributes|array $attributes): static;
 
     abstract public function setContents(array $contents): static;
 

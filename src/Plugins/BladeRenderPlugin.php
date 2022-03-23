@@ -19,7 +19,7 @@ class BladeRenderPlugin extends RenderPlugin
 
     public function handle(AbstractElement $element): AbstractElement
     {
-        $attributes = $element->getAttributes();
+        $attributes = $element->getAttributes()->toArray();
 
         foreach ($attributes as $key => $value) {
             if (is_int($key) || $key[0] !== ':') {
