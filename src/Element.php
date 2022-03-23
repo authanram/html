@@ -14,7 +14,7 @@ class Element extends AbstractElement
 
     protected string $tag;
 
-    protected array $attributes;
+    protected Attributes $attributes;
 
     protected array $contents;
 
@@ -35,7 +35,9 @@ class Element extends AbstractElement
 
         $this->tag = $tag ?? $this->getTag();
 
-        $this->attributes = $attributes ?? $this->getAttributes();
+        $this->attributes = is_null($attributes) === false
+            ? Attributes::make($attributes)
+            : $this->getAttributes();
 
         $this->contents = $contents ?? $this->getContents();
 
@@ -47,9 +49,9 @@ class Element extends AbstractElement
         return $this->tag ??= static::$tagDefault;
     }
 
-    public function getAttributes(): array
+    public function getAttributes(): Attributes
     {
-        return $this->attributes ??= [];
+        return $this->attributes ??= Attributes::make();
     }
 
     public function getContents(): array
@@ -72,7 +74,7 @@ class Element extends AbstractElement
 
     public function setAttributes(array $attributes): static
     {
-        $this->attributes = $attributes;
+        $this->attributes = Attributes::make($attributes);
 
         return $this;
     }
@@ -93,7 +95,7 @@ class Element extends AbstractElement
 
     public function attributes(): array
     {
-        return $this->getAttributes();
+        return $this->getAttributes()->toArray();
     }
 
     public function contents(): array

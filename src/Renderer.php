@@ -17,7 +17,7 @@ class Renderer extends AbstractRenderer
 
         $html = SpatieHtmlElement::render(
             $element->getTag(),
-            $element->getAttributes(),
+            $element->getAttributes()->toArray(),
             $this->renderContents($element->getContents()),
         );
 
@@ -28,7 +28,7 @@ class Renderer extends AbstractRenderer
     {
         $rendered = [];
 
-        $isElement = fn ($element) => is_object($element)
+        $isElement = static fn ($element) => is_object($element)
             && is_subclass_of($element::class, AbstractElement::class);
 
         foreach ($elements as $element) {
@@ -52,7 +52,7 @@ class Renderer extends AbstractRenderer
 
             $element = [
                 $instance->getTag(),
-                $element['attributes'] ?? $instance->getAttributes(),
+                $element['attributes'] ?? $instance->getAttributes()->toArray(),
                 $element['contents'] ?? $instance->getContents(),
             ];
         }

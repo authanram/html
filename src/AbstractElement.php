@@ -8,7 +8,7 @@ abstract class AbstractElement
 {
     abstract public function getTag(): string;
 
-    abstract public function getAttributes(): array;
+    abstract public function getAttributes(): Attributes;
 
     abstract public function getContents(): array;
 
