@@ -4,85 +4,70 @@ declare(strict_types=1);
 
 namespace Authanram\Html;
 
-use Illuminate\Support\Arr;
-use JetBrains\PhpStorm\Pure;
+use Illuminate\Support\Collection;
 use TypeError;
 
 class Attributes
 {
-    protected array $attributes = [];
+    protected Collection $attributes;
 
-    protected array $buffer = [];
+    protected array $buffer;
 
-    #[Pure] public static function make(array $attributes = []): static
+    public static function make(array $attributes = []): static
     {
         return new static($attributes);
     }
 
     public function __construct(array $attributes = [])
     {
-        $this->attributes = $attributes;
+        $this->attributes = new Collection($attributes);
     }
 
     public function get(string|int $key, mixed $default = null): mixed
     {
-        return Arr::get($this->attributes, $key, $default);
+        return $this->attributes->get((string)$key, $default);
     }
 
-    public function set(string|int $key, array|string|int|bool $value = null): static
+    public function set(string|int $key, string|float|int|bool $value = null): static
     {
-        $this->attributes = Arr::set($this->attributes, $key, $value);
-
-        return $this;
+        return $this->forward('replace', [[(string)$key => $value]]);
     }
 
     public function getAttributes(): array
     {
-        return $this->attributes;
+        return $this->attributes->toArray();
     }
 
     public function setAttributes(array $attributes): static
     {
-        $this->attributes = $attributes;
+        $this->attributes = new Collection($attributes);
 
         return $this;
     }
 
-    public function add(string|int $key, array|string|int|bool $value = null): static
+    public function add(string $key, array|string|int|bool $value = null): static
     {
-        $value = is_array($value) ? implode(' ', $value) : $value;
-
-        $this->attributes = Arr::add($this->attributes, $key, $value);
-
-        return $this;
+        return $this->forward('put', [$key, $value]);
     }
 
     public function merge(array $attributes): static
     {
-        $this->attributes = array_merge($this->attributes, $attributes);
-
-        return $this;
+        return $this->forward(__FUNCTION__, [$attributes]);
     }
 
     public function except(array|string|int $keys): static
     {
-        $this->buffer(__FUNCTION__, $keys);
-
-        return $this;
+        return $this->forward(__FUNCTION__, [$keys]);
     }
 
     public function only(array|string|int $keys): static
     {
-        $this->buffer(__FUNCTION__, $keys);
-
-        return $this;
+        return $this->forward(__FUNCTION__, [$keys]);
     }
 
     public function forget(array|string|int $keys): static
     {
-        Arr::forget($this->attributes, $keys);
-
-        return $this;
+        return $this->forward(__FUNCTION__, [$keys]);
     }
 
     public function pipe(callable $callback): static
@@ -90,12 +75,14 @@ class Attributes
         $result = $callback($this);
 
         if (is_object($result) && $result::class === __CLASS__) {
-            return $result;
+            $this->attributes = $result->attributes;
+
+            return $this;
         }
 
         throw new TypeError(sprintf(
-            'Return value of "%s" must be type of "%s", got: %s',
-            __FUNCTION__,
+            '%s: Return value must be of type %s, %s returned',
+            __METHOD__.'()',
             __CLASS__,
             gettype($result),
         ));
@@ -103,14 +90,14 @@ class Attributes
 
     public function flush(): static
     {
-        $this->attributes = [];
+        $this->attributes = new Collection();
 
         return $this;
     }
 
     public function toArray(): array
     {
-        return $this->attributesBuffered();
+        return $this->attributes->toArray();
     }
 
     public function toHtml(): string
@@ -120,11 +107,9 @@ class Attributes
 
     public function __toString(): string
     {
-        $attributes = $this->attributesBuffered(true);
-
         $strings = [];
 
-        foreach ($attributes as $key => $value) {
+        foreach ($this->attributes as $key => $value) {
             if (in_array($value, [null, true, ''], true)) {
                 $strings[] = $key;
                 continue;
@@ -135,11 +120,9 @@ class Attributes
                 continue;
             }
 
-            if ($value === false) {
-                $value = 0;
-            }
+            $value = (string)($value === false ? 0 : $value);
 
-            $value = htmlspecialchars((string)$value, ENT_COMPAT);
+            $value = htmlspecialchars($value, ENT_COMPAT);
 
             $strings[] = "$key=\"$value\"";
         }
@@ -147,21 +130,10 @@ class Attributes
         return implode(' ', $strings);
     }
 
-    protected function buffer(string $function, array|string $value): void
+    protected function forward(string $function, array $args): static
     {
-        $this->buffer = ['function' => $function, 'value' => $value];
-    }
+        $this->attributes = $this->attributes->{$function}(...$args);
 
-    protected function attributesBuffered(bool $flush = false): array
-    {
-        $attributes = is_null($this->buffer['function'] ?? null) === false
-            ? Arr::{$this->buffer['function']}($this->attributes, $this->buffer['value'] ?? [])
-            : $this->attributes;
-
-        if ($flush) {
-            $this->buffer = [];
-        }
-
-        return $attributes;
+        return $this;
     }
 }

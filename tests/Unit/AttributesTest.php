@@ -64,50 +64,22 @@ it('sets attribute', function (): void {
         ->toEqual('bar');
 });
 
-it('is aware of forgotten keys', function (): void {
-    expect($this->instance->forget('foo')->toHtml())
-        ->toEqual('quux="0" bar="foo bar baz" baz data-foo');
-
-    expect($this->instance->forget(0)->toHtml())
-        ->toEqual('quux="0" bar="foo bar baz" data-foo');
-
-    expect($this->instance->forget(['bar', 'data-foo'])->getAttributes())
-        ->toEqual(['quux' => false]);
+it('forwards call forget', function (): void {
+    expect((clone $this->instance)->forget(['foo', 0, 'data-foo'])->toHtml())
+        ->toEqual('quux="0" bar="foo bar baz"');
 });
 
-it('is aware of buffer: except', function (): void {
-    expect($this->instance->except('foo')->toHtml())
-        ->toEqual('quux="0" bar="foo bar baz" baz data-foo');
-
-    expect($this->instance->except(['foo', 0])->toHtml())
-        ->toEqual('quux="0" bar="foo bar baz" data-foo');
-
-    expect($this->instance->except(['quux', 'foo', 'data-foo'])->toHtml())
-        ->toEqual('bar="foo bar baz" baz');
+it('forwards call except', function (): void {
+    expect((clone $this->instance)->except(['foo', 0, 'data-foo'])->toHtml())
+        ->toEqual('quux="0" bar="foo bar baz"');
 });
 
-it('is aware of buffer: only', function (): void {
-    expect($this->instance->only('foo')->toHtml())
+it('forwards call only', function (): void {
+    expect((clone $this->instance)->only('foo')->toHtml())
         ->toEqual('foo="bar"');
 
-    expect($this->instance->only(['foo', 0, 'data-foo'])->toHtml())
+    expect((clone $this->instance)->only(['foo', 0, 'data-foo'])->toHtml())
         ->toEqual('foo="bar" baz data-foo');
-});
-
-it('is aware of previous buffer', function (): void {
-    $instance = clone $this->instance;
-
-    expect($instance->only('foo')->except('foo')->toHtml())
-        ->toEqual('quux="0" bar="foo bar baz" baz data-foo');
-
-    expect($instance->only(['foo', 'data-foo'])->except(['foo', 'data-foo'])->toHtml())
-        ->toEqual('quux="0" bar="foo bar baz" baz');
-
-    expect($instance->except('foo')->only('foo')->toHtml())
-        ->toEqual('foo="bar"');
-
-    expect($instance->except(['foo', 'data-foo'])->only(['foo', 'data-foo'])->toHtml())
-        ->toEqual('foo="bar" data-foo');
 });
 
 it('flushes', function (): void {
@@ -121,14 +93,7 @@ it('flushes', function (): void {
 });
 
 it('merges', function (): void {
-    $merge = ['a' => 'a', 'z' => 2];
-
-    $this->instance->merge($merge);
-
-    expect($this->instance->getAttributes())
-        ->toEqual(array_merge($this->attributes, $merge));
-
-    expect($this->instance->toHtml())
+    expect($this->instance->merge(['a' => 'a', 'z' => 2])->toHtml())
         ->toEqual('quux="0" foo="bar" bar="foo bar baz" baz data-foo a="a" z="2"');
 });
 
@@ -141,14 +106,15 @@ it('pipes', function (): void {
     });
 
     expect($this->instance->getAttributes())
-        ->toEqual(array_merge(
-            ['a' => 'a'],
-            $this->attributes,
-            ['z' => 2],
-        ));
+        ->toEqual([
+            'foo' => 'bar',
+            0 => 'baz',
+            'a' => 'a',
+            'z' => 2,
+        ]);
 
     expect($this->instance->toHtml())
-        ->toEqual('foo="bar" baz');
+        ->toEqual('foo="bar" baz a="a" z="2"');
 
     $exceptionMessage = '';
 
@@ -159,9 +125,11 @@ it('pipes', function (): void {
     }
 
     expect($exceptionMessage)
-        ->toEqual(
-            'Return value of "pipe" must be type of "Authanram\Html\Attributes", got: array',
-        );
+        ->toEqual(sprintf(
+            '%s: Return value must be of type %s, array returned',
+            'Authanram\Html\Attributes::pipe()',
+            Attributes::class,
+        ));
 });
 
 it('renders', function (): void {
