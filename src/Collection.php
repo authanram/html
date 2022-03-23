@@ -22,9 +22,7 @@ use TypeError;
  */
 abstract class Collection
 {
-    protected static array $collectionMethods = [];
-
-    protected static array $collectionsMethodsDefault = [
+    protected static array $collectionMethods = [
         'add',
         'all',
         'except',
@@ -90,16 +88,11 @@ abstract class Collection
     {
         $methods = array_merge(
             static::$collectionMethods,
-            static::$collectionsMethodsDefault,
-        );
-
-        $methodsCombined = array_merge(
-            $methods,
             static::$methodsVoid,
         );
 
-        if (array_key_exists($name, $methodsCombined) === false
-            && in_array($name, $methodsCombined, true) === false
+        if (array_key_exists($name, $methods) === false
+            && in_array($name, $methods, true) === false
         ) {
             throw new BadMethodCallException(
                 'Call to undefined method '.static::class.'::'.$name.'()',
