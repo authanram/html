@@ -11,14 +11,14 @@ final class Attributes extends Collection
 {
     public function toHtml(): string
     {
-        return (string) $this;
+        return (string)$this;
     }
 
     public function __toString(): string
     {
         $strings = [];
 
-        foreach ($this->attributes as $key => $value) {
+        foreach ($this->all() as $key => $value) {
             if (in_array($value, [null, true, ''], true)) {
                 $strings[] = $key;
                 continue;

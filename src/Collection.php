@@ -10,6 +10,7 @@ use InvalidArgumentException;
 use TypeError;
 
 /**
+ * @method array all()
  * @method array toArray()
  * @method mixed get(string|int $key)
  * @method self except(array|string $keys)
@@ -23,6 +24,7 @@ abstract class Collection
 
     protected static array $collectionsMethodsDefault = [
         'add',
+        'all',
         'except',
         'forget',
         'get',
@@ -65,20 +67,20 @@ abstract class Collection
         'offsetUnset',
     ];
 
-    protected IlluminateCollection $attributes;
+    protected IlluminateCollection $items;
 
     public static function make(array $items = []): static
     {
         return new static($items);
     }
 
-    public function __construct(array $attributes = [])
+    public function __construct(array $items = [])
     {
-        if (count($attributes) && array_is_list($attributes)) {
-            throw new InvalidArgumentException('$attributes must be an map');
+        if (count($items) && array_is_list($items)) {
+            throw new InvalidArgumentException('$items must be an map');
         }
 
-        $this->attributes = new IlluminateCollection($attributes);
+        $this->items = new IlluminateCollection($items);
     }
 
     public function __call(string $name, array $arguments): mixed
@@ -101,7 +103,7 @@ abstract class Collection
             );
         }
 
-        $result = $this->attributes->{$name}(...$arguments);
+        $result = $this->items->{$name}(...$arguments);
 
         if (in_array($name, static::$methodsVoid, true)) {
             return null;
@@ -111,21 +113,21 @@ abstract class Collection
             return $result;
         }
 
-        $this->attributes = $result;
+        $this->items = $result;
 
         return $this;
     }
 
     public function set(string|int $key, mixed $value): static
     {
-        $this->attributes = $this->attributes->merge([$key => $value]);
+        $this->items = $this->items->merge([$key => $value]);
 
         return $this;
     }
 
     public function add(string|int $key, mixed $value): static
     {
-        $this->attributes = $this->attributes->merge([$key => $value]);
+        $this->items = $this->items->merge([$key => $value]);
 
         return $this;
     }
@@ -135,7 +137,7 @@ abstract class Collection
         $result = $callback($this);
 
         if (is_object($result) && is_subclass_of($result, __CLASS__)) {
-            $this->attributes = $result->attributes;
+            $this->items = $result->items;
 
             return $this;
         }
@@ -150,7 +152,7 @@ abstract class Collection
 
     public function flush(): static
     {
-        $this->attributes = new IlluminateCollection();
+        $this->items = new IlluminateCollection();
 
         return $this;
     }
