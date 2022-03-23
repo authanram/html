@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Authanram\Html;
 
-use Illuminate\Support\Collection as IlluminateCollection;
 use InvalidArgumentException;
 
 /**
