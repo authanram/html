@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Authanram\Html;
 
-use Authanram\Html\Plugins\TrimRendererPlugin;
-
 class Element extends AbstractElement
 {
     use Concerns\HasRenderer;
@@ -59,8 +57,7 @@ class Element extends AbstractElement
 
     public function getRenderer(): AbstractRenderer
     {
-        return $this->renderer ??= (new Renderer())
-            ->addPlugin(TrimRendererPlugin::class);
+        return $this->renderer ??= (new Renderer());
     }
 
     public function setTag(string $tag): static
