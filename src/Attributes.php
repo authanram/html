@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Authanram\Html;
 
 /**
- * @method static add(string $key, array|string|int|bool $value = null)
+ * @method self add(string $key, array|string|int|bool $value = null)
  */
 final class Attributes extends Collection
 {

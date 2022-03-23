@@ -13,10 +13,12 @@ use TypeError;
  * @method array all()
  * @method array toArray()
  * @method mixed get(string|int $key)
+ * @method self add(string|int $key, mixed $value)
  * @method self except(array|string $keys)
  * @method self forget(array|string $keys)
  * @method self merge(array $items)
  * @method self only(array|string $keys)
+ * @method self set(string|int $key, mixed $value)
  */
 abstract class Collection
 {
@@ -30,6 +32,7 @@ abstract class Collection
         'get',
         'merge',
         'only',
+        'set',
         'toArray',
     ];
 
@@ -103,7 +106,9 @@ abstract class Collection
             );
         }
 
-        $result = $this->items->{$name}(...$arguments);
+        $result = method_exists($this, 'forward'.ucfirst($name))
+            ? $this->{'forward'.ucfirst($name)}(...$arguments)
+            : $this->items->{$name}(...$arguments);
 
         if (in_array($name, static::$methodsVoid, true)) {
             return null;
@@ -118,28 +123,26 @@ abstract class Collection
         return $this;
     }
 
-    public function set(string|int $key, mixed $value): static
+    public function forwardSet(string|int $key, mixed $value): IlluminateCollection
     {
-        $this->items = $this->items->merge([$key => $value]);
-
-        return $this;
+        return $this->items->put($key, $value);
     }
 
-    public function add(string|int $key, mixed $value): static
+    public function forwardAdd(string|int $key, mixed $value): IlluminateCollection
     {
-        $this->items = $this->items->merge([$key => $value]);
+        if ($this->items->keys()->contains($key) === false) {
+            $this->items = $this->items->merge([$key => $value]);
+        }
 
-        return $this;
+        return $this->items;
     }
 
-    public function pipe(callable $callback): static
+    public function pipe(callable $callback): IlluminateCollection
     {
         $result = $callback($this);
 
         if (is_object($result) && is_subclass_of($result, __CLASS__)) {
-            $this->items = $result->items;
-
-            return $this;
+            return $result->items;
         }
 
         throw new TypeError(sprintf(
