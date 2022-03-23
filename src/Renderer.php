@@ -33,6 +33,6 @@ class Renderer extends AbstractRenderer
 
     public function render(AbstractElement $element): string
     {
-        return $this->pluginManager->handle($element);
+        return $this->pluginManager->handle($element) ?? '';
     }
 }
