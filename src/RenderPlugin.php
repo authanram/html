@@ -15,14 +15,14 @@ class RenderPlugin extends AbstractRendererPlugin
         return $this;
     }
 
-    public function authorize(AbstractElement $element): bool
+    public function authorize(): bool
     {
         return true;
     }
 
-    public function handle(AbstractElement $element): AbstractElement
+    public function handle(): AbstractElement
     {
-        return $element;
+        return $this->element;
     }
 
     public function render(string $html): string

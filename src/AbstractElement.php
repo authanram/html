@@ -30,6 +30,5 @@ abstract class AbstractElement
 
     abstract public function renderer(): AbstractRenderer;
 
-    /** @param AbstractRendererPlugin[] $plugins */
-    abstract public function render(array $plugins = []): string;
+    abstract public function render(): string;
 }

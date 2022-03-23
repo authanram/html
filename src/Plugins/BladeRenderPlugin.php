@@ -12,14 +12,14 @@ class BladeRenderPlugin extends RenderPlugin
 {
     protected array $attributes = [];
 
-    public function authorize(AbstractElement $element): bool
+    public function authorize(): bool
     {
-        return str_starts_with($element->getTag(), 'x-');
+        return str_starts_with($this->element->getTag(), 'x-');
     }
 
-    public function handle(AbstractElement $element): AbstractElement
+    public function handle(): AbstractElement
     {
-        $attributes = $element->getAttributes()->toArray();
+        $attributes = $this->element->getAttributes()->toArray();
 
         foreach ($attributes as $key => $value) {
             if (is_int($key) || $key[0] !== ':') {
@@ -33,13 +33,13 @@ class BladeRenderPlugin extends RenderPlugin
             $attributes[$key] = "\$$attributeKey";
         }
 
-        $element->setAttributes($attributes);
+        $this->element->setAttributes($attributes);
 
-        return $element;
+        return $this->element;
     }
 
     public function render(string $html): string
     {
-        return trim(Blade::render($html, $this->attributes));
+        return Blade::render($html, $this->attributes);
     }
 }

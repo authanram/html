@@ -15,7 +15,9 @@ it('renders', function (): void {
         ['quux']
     );
 
-    $element->getRenderer()->addPlugin(BladeRenderPlugin::class);
+    $element->getRenderer()->withPlugins([
+        new BladeRenderPlugin(),
+    ]);
 
     $result = $element->render();
 

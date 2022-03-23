@@ -46,10 +46,12 @@ abstract class Collection
         'toJson',
     ];
 
-    protected static array $methodsVoid = [
+    protected static array $collectionMethodsVoid = [
         'offsetSet',
         'offsetUnset',
     ];
+
+    protected static array $collectionMethodsAuthorizing = [];
 
     protected IlluminateCollection $items;
 
@@ -68,7 +70,7 @@ abstract class Collection
         $methods = array_merge(
             ['all', 'toArray', 'merge'],
             static::$collectionMethods,
-            static::$methodsVoid,
+            static::$collectionMethodsVoid,
         );
 
         if (array_key_exists($name, $methods) === false
@@ -81,7 +83,17 @@ abstract class Collection
 
         $result = $this->items->{$name}(...$arguments);
 
-        if (in_array($name, static::$methodsVoid, true)) {
+        if (in_array($name, static::$collectionMethodsAuthorizing, true)) {
+            if (method_exists(static::class, 'authorize') === false) {
+                throw new BadMethodCallException(
+                    'Call to undefined method '.static::class.'::authorize()',
+                );
+            }
+
+            static::authorize($result->toArray());
+        }
+
+        if (in_array($name, static::$collectionMethodsVoid, true)) {
             return null;
         }
 
