@@ -4,70 +4,130 @@ declare(strict_types=1);
 
 namespace Authanram\Html;
 
+use BadMethodCallException;
 use Illuminate\Support\Collection as IlluminateCollection;
+use InvalidArgumentException;
 use TypeError;
 
+/**
+ * @method array toArray()
+ * @method mixed get(string|int $key)
+ * @method self except(array|string $keys)
+ * @method self forget(array|string $keys)
+ * @method self merge(array $items)
+ * @method self only(array|string $keys)
+ */
 abstract class Collection
 {
     protected static array $collectionMethods = [];
 
+    protected static array $collectionsMethodsDefault = [
+        'add',
+        'except',
+        'forget',
+        'get',
+        'merge',
+        'only',
+        'toArray',
+    ];
+
+    protected static array $collectionMethodsResolving = [
+        'all',
+        'avg',
+        'contains',
+        'containsOneItem',
+        'count',
+        'doesntContain',
+        'first',
+        'firstOrFail',
+        'get',
+        'getIterator',
+        'getOrPut',
+        'has',
+        'hasAny',
+        'implode',
+        'isEmpty',
+        'isNotEmpty',
+        'join',
+        'last',
+        'median',
+        'mode',
+        'offsetExists',
+        'offsetGet',
+        'search',
+        'sole',
+        'toArray',
+        'toJson',
+    ];
+
+    protected static array $methodsVoid = [
+        'offsetSet',
+        'offsetUnset',
+    ];
+
     protected IlluminateCollection $attributes;
 
-    public static function make(array $attributes = []): static
+    public static function make(array $items = []): static
     {
-        return new static($attributes);
+        return new static($items);
     }
 
     public function __construct(array $attributes = [])
     {
+        if (count($attributes) && array_is_list($attributes)) {
+            throw new InvalidArgumentException('$attributes must be an map');
+        }
+
         $this->attributes = new IlluminateCollection($attributes);
     }
 
-    public function get(string|int $key, mixed $default = null): mixed
+    public function __call(string $name, array $arguments): mixed
     {
-        return $this->attributes->get((string)$key, $default);
-    }
+        $methods = array_merge(
+            static::$collectionMethods,
+            static::$collectionsMethodsDefault,
+        );
 
-    public function set(string|int $key, string|float|int|bool $value = null): static
-    {
-        return $this->forward('replace', [[(string)$key => $value]]);
-    }
+        $methodsCombined = array_merge(
+            $methods,
+            static::$methodsVoid,
+        );
 
-    public function getAttributes(): array
-    {
-        return $this->attributes->toArray();
-    }
+        if (array_key_exists($name, $methodsCombined) === false
+            && in_array($name, $methodsCombined, true) === false
+        ) {
+            throw new BadMethodCallException(
+                'Call to undefined method '.static::class.'::'.$name.'()',
+            );
+        }
 
-    public function setAttributes(array $attributes): static
-    {
-        $this->attributes = new IlluminateCollection($attributes);
+        $result = $this->attributes->{$name}(...$arguments);
+
+        if (in_array($name, static::$methodsVoid, true)) {
+            return null;
+        }
+
+        if (in_array($name, static::$collectionMethodsResolving, true)) {
+            return $result;
+        }
+
+        $this->attributes = $result;
 
         return $this;
     }
 
-    public function add(string $key, array|string|int|bool $value = null): static
+    public function set(string|int $key, mixed $value): static
     {
-        return $this->forward('put', [$key, $value]);
+        $this->attributes = $this->attributes->merge([$key => $value]);
+
+        return $this;
     }
 
-    public function merge(array $attributes): static
+    public function add(string|int $key, mixed $value): static
     {
-        return $this->forward(__FUNCTION__, [$attributes]);
-    }
+        $this->attributes = $this->attributes->merge([$key => $value]);
 
-    public function except(array|string|int $keys): static
-    {
-        return $this->forward(__FUNCTION__, [$keys]);
-    }
-
-    public function only(array|string|int $keys): static
-    {
-        return $this->forward(__FUNCTION__, [$keys]);
-    }
-
-    public function forget(array|string|int $keys): static
-    {
-        return $this->forward(__FUNCTION__, [$keys]);
+        return $this;
     }
 
     public function pipe(callable $callback): static
@@ -91,48 +151,6 @@ abstract class Collection
     public function flush(): static
     {
         $this->attributes = new IlluminateCollection();
-
-        return $this;
-    }
-
-    public function toArray(): array
-    {
-        return $this->attributes->toArray();
-    }
-
-    public function toHtml(): string
-    {
-        return (string) $this;
-    }
-
-    public function __toString(): string
-    {
-        $strings = [];
-
-        foreach ($this->attributes as $key => $value) {
-            if (in_array($value, [null, true, ''], true)) {
-                $strings[] = $key;
-                continue;
-            }
-
-            if (is_int($key) && is_scalar($value)) {
-                $strings[] = $value;
-                continue;
-            }
-
-            $value = (string)($value === false ? 0 : $value);
-
-            $value = htmlspecialchars($value, ENT_COMPAT);
-
-            $strings[] = "$key=\"$value\"";
-        }
-
-        return implode(' ', $strings);
-    }
-
-    protected function forward(string $function, array $args): static
-    {
-        $this->attributes = $this->attributes->{$function}(...$args);
 
         return $this;
     }

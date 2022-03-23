@@ -9,7 +9,7 @@ beforeEach(function () {
         'quux' => false,
         'foo' => 'bar',
         'bar' => 'foo bar baz',
-        'baz',
+        'baz' => 'qux',
         'data-foo' => true,
     ];
 
@@ -20,57 +20,35 @@ it('can be instantiated', function (): void {
     expect((new Attributes())->toArray())
         ->toEqual([]);
 
-    expect((new Attributes($this->attributes))->getAttributes())
+    expect((new Attributes($this->attributes))->toArray())
         ->toEqual($this->attributes);
 });
 
 it('can be instantiated statically', function (): void {
-    expect(Attributes::make()->getAttributes())
+    expect(Attributes::make()->toArray())
         ->toEqual([]);
 
-    expect($this->instance->getAttributes())
-        ->toEqual($this->attributes);
-});
-
-it('gets attributes', function (): void {
-    expect(Attributes::make()->getAttributes())
-        ->toEqual([]);
-
-    expect($this->instance->getAttributes())
-        ->toEqual($this->attributes);
-});
-
-it('sets attributes', function (): void {
-    expect($this->instance->setAttributes([])->getAttributes())
-        ->toEqual([]);
-
-    expect(Attributes::make()->setAttributes($this->attributes)->getAttributes())
+    expect($this->instance->toArray())
         ->toEqual($this->attributes);
 });
 
 it('gets attribute', function (): void {
     expect($this->instance->get('bar'))
         ->toEqual('foo bar baz');
-
-    expect($this->instance->get(0))
-        ->toEqual('baz');
 });
 
 it('sets attribute', function (): void {
     expect($this->instance->set('bar', 'quux')->get('bar'))
         ->toEqual('quux');
-
-    expect($this->instance->set(0, 'bar')->get(0))
-        ->toEqual('bar');
 });
 
 it('forwards call forget', function (): void {
-    expect((clone $this->instance)->forget(['foo', 0, 'data-foo'])->toHtml())
+    expect((clone $this->instance)->forget(['foo', 'baz', 'data-foo'])->toHtml())
         ->toEqual('quux="0" bar="foo bar baz"');
 });
 
 it('forwards call except', function (): void {
-    expect((clone $this->instance)->except(['foo', 0, 'data-foo'])->toHtml())
+    expect((clone $this->instance)->except(['foo', 'baz', 'data-foo'])->toHtml())
         ->toEqual('quux="0" bar="foo bar baz"');
 });
 
@@ -78,14 +56,14 @@ it('forwards call only', function (): void {
     expect((clone $this->instance)->only('foo')->toHtml())
         ->toEqual('foo="bar"');
 
-    expect((clone $this->instance)->only(['foo', 0, 'data-foo'])->toHtml())
-        ->toEqual('foo="bar" baz data-foo');
+    expect((clone $this->instance)->only(['foo', 'baz', 'data-foo'])->toHtml())
+        ->toEqual('foo="bar" baz="qux" data-foo');
 });
 
 it('flushes', function (): void {
     $this->instance->flush();
 
-    expect($this->instance->getAttributes())
+    expect($this->instance->toArray())
         ->toBeEmpty()->toEqual([]);
 
     expect($this->instance->toHtml())
@@ -94,7 +72,7 @@ it('flushes', function (): void {
 
 it('merges', function (): void {
     expect($this->instance->merge(['a' => 'a', 'z' => 2])->toHtml())
-        ->toEqual('quux="0" foo="bar" bar="foo bar baz" baz data-foo a="a" z="2"');
+        ->toEqual('quux="0" foo="bar" bar="foo bar baz" baz="qux" data-foo a="a" z="2"');
 });
 
 it('pipes', function (): void {
@@ -105,16 +83,15 @@ it('pipes', function (): void {
             ->add('z', 2);
     });
 
-    expect($this->instance->getAttributes())
+    expect($this->instance->toArray())
         ->toEqual([
             'foo' => 'bar',
-            0 => 'baz',
             'a' => 'a',
             'z' => 2,
         ]);
 
     expect($this->instance->toHtml())
-        ->toEqual('foo="bar" baz a="a" z="2"');
+        ->toEqual('foo="bar" a="a" z="2"');
 
     $exceptionMessage = '';
 
@@ -137,5 +114,5 @@ it('renders', function (): void {
         ->toBeString()->toBeEmpty()->toEqual('');
 
     expect($this->instance->toHtml())
-        ->toEqual('quux="0" foo="bar" bar="foo bar baz" baz data-foo');
+        ->toEqual('quux="0" foo="bar" bar="foo bar baz" baz="qux" data-foo');
 });
