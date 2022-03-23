@@ -11,25 +11,11 @@ use TypeError;
 /**
  * @method array all()
  * @method array toArray()
- * @method mixed get(string $key)
- * @method self add(string $key, mixed $value)
- * @method self except(array|string $keys)
- * @method self forget(array|string $keys)
  * @method self merge(array $items)
- * @method self only(array|string $keys)
- * @method self set(string $key, mixed $value)
  */
 abstract class Collection
 {
-    protected static array $collectionMethods = [
-        'all',
-        'except',
-        'forget',
-        'get',
-        'merge',
-        'only',
-        'toArray',
-    ];
+    protected static array $collectionMethods = [];
 
     protected static array $collectionMethodsResolving = [
         'all',
@@ -80,24 +66,20 @@ abstract class Collection
     public function __call(string $name, array $arguments): mixed
     {
         $methods = array_merge(
+            ['all', 'toArray', 'merge'],
             static::$collectionMethods,
             static::$methodsVoid,
         );
 
-        $methodForward = 'forward'.ucfirst($name);
-
         if (array_key_exists($name, $methods) === false
             && in_array($name, $methods, true) === false
-            && method_exists($this, $methodForward) === false
         ) {
             throw new BadMethodCallException(
                 'Call to undefined method '.static::class.'::'.$name.'()',
             );
         }
 
-        $result = method_exists($this, $methodForward)
-            ? $this->{$methodForward}(...$arguments)
-            : $this->items->{$name}(...$arguments);
+        $result = $this->items->{$name}(...$arguments);
 
         if (in_array($name, static::$methodsVoid, true)) {
             return null;
@@ -112,20 +94,6 @@ abstract class Collection
         return $this;
     }
 
-    public function forwardSet(string|int $key, mixed $value): IlluminateCollection
-    {
-        return $this->items->put($key, $value);
-    }
-
-    public function forwardAdd(string|int $key, mixed $value): IlluminateCollection
-    {
-        if ($this->items->keys()->contains($key) === false) {
-            $this->items = $this->items->merge([$key => $value]);
-        }
-
-        return $this->items;
-    }
-
     public function pipe(callable $callback): IlluminateCollection
     {
         $result = $callback($this);
@@ -138,7 +106,7 @@ abstract class Collection
             '%s: Return value must be of type %s, %s returned',
             static::class.'::'.__FUNCTION__.'()',
             static::class,
-            gettype($result),
+            is_object($result) ? $result::class : gettype($result),
         ));
     }
 
