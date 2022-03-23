@@ -16,7 +16,7 @@ it('parses', function (): void {
     ];
 
     $result = AbbreviationParser::parse(
-        'div#el-id.bg-green.hover:bg-red[x-data={foo:\'bar\', qux:true}][style=display:none;]',
+        'div#el-id.bg-green.hover:bg-red[x-data={foo:\'bar\',qux:true}][style=display:none;]',
     );
 
     expect($result)->toEqual($expectation);
