@@ -11,17 +11,20 @@ it('parses', function (): void {
             'x-data' => '{foo:\'bar\',qux:true}',
             'style' => 'display:none;',
             'class' => 'bg-green hover:bg-red',
+            'id' => 'el-id',
         ],
     ];
 
     $result = AbbreviationParser::parse(
-        'div.bg-green.hover:bg-red[x-data={foo:\'bar\',qux:true}][style=display:none;]',
+        'div#el-id.bg-green.hover:bg-red[x-data={foo:\'bar\',qux:true}][style=display:none;]',
     );
 
     expect($result)->toEqual($expectation);
 
     $result = AbbreviationParser::parse('
-        div.bg-green.hover:bg-red
+        div
+        #el-id
+        .bg-green.hover:bg-red
         [x-data={foo:\'bar\',qux:true}]
         [style=display:none;]
     ');
