@@ -12,13 +12,13 @@ use TypeError;
 /**
  * @method array all()
  * @method array toArray()
- * @method mixed get(string|int $key)
- * @method self add(string|int $key, mixed $value)
+ * @method mixed get(string $key)
+ * @method self add(string $key, mixed $value)
  * @method self except(array|string $keys)
  * @method self forget(array|string $keys)
  * @method self merge(array $items)
  * @method self only(array|string $keys)
- * @method self set(string|int $key, mixed $value)
+ * @method self set(string $key, mixed $value)
  */
 abstract class Collection
 {

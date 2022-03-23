@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Authanram\Html;
 
 /**
- * @method self add(string $key, array|string|int|bool $value = null)
+ * @method self add(string $key, string|float|int|bool $value = null)
+ * @method self set(string $key, string|float|int|bool $value)
  */
 final class Attributes extends Collection
 {
@@ -21,11 +22,6 @@ final class Attributes extends Collection
         foreach ($this->all() as $key => $value) {
             if (in_array($value, [null, true, ''], true)) {
                 $strings[] = $key;
-                continue;
-            }
-
-            if (is_int($key) && is_scalar($value)) {
-                $strings[] = $value;
                 continue;
             }
 
