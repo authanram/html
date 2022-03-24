@@ -4,39 +4,21 @@ declare(strict_types=1);
 
 namespace Authanram\Html\Collections;
 
-use Authanram\Html\CollectionProxy;
 use Authanram\Html\Contracts\RendererPlugin;
-use InvalidArgumentException;
 
-/**
- * @method self add(RendererPlugin $plugin)
- * @method self except(array|string $keys)
- * @method self prepend(RendererPlugin $plugin)
- */
-final class PluginCollection extends CollectionProxy
+final class PluginCollection extends Collection
 {
-    protected static array $collectionMethods = [
-        'except',
-        'prepend',
-    ];
-
-    public static function authorize(array $items): void
+    public function add(RendererPlugin $value): self
     {
-        foreach ($items as $item) {
-            if (is_object($item) === false) {
-                throw new InvalidArgumentException(sprintf(
-                    'Expected instance of %s, got: %s (%s)',
-                    RendererPlugin::class,
-                    gettype($item),
-                    $item,
-                ));
-            }
+        $this->items[] = $value;
 
-            if (is_subclass_of($item, RendererPlugin::class) === false) {
-                throw new InvalidArgumentException(
-                    $item.' must be a subclass of '.RendererPlugin::class,
-                );
-            }
-        }
+        return $this;
+    }
+
+    public function prepend(RendererPlugin $plugin): self
+    {
+        array_unshift($this->items, $plugin);
+
+        return $this;
     }
 }

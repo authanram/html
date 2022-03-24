@@ -57,11 +57,6 @@ class Element implements Contracts\Renderable
         return $this->contents ??= [];
     }
 
-    public function getRenderer(): Contracts\Renderer
-    {
-        return $this->renderer ??= (new Renderer());
-    }
-
     public function setTag(string $tag): static
     {
         $this->tag = $tag;

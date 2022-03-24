@@ -21,6 +21,16 @@ beforeEach(function () {
         ]);
 });
 
+it('renders', function (): void {
+    $this->element->setRenderer(new Renderer());
+
+    $result = $this->element->render();
+
+    expect($result)->toEqual(
+        '<div class="green">baz</div>',
+    );
+});
+
 it('renders with plugins', function (): void {
     $this->element->setRenderer($this->renderer);
 
