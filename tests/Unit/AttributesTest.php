@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Authanram\Html\Attributes;
+use Authanram\Html\Collections\AttributesCollection;
 
 beforeEach(function () {
     $this->attributes = [
@@ -13,23 +13,23 @@ beforeEach(function () {
         'data-foo' => true,
     ];
 
-    $this->instance = Attributes::make($this->attributes);
+    $this->instance = AttributesCollection::make($this->attributes);
 });
 
 it('throws if attributes is not an array map', function (): void {
-    new Attributes(['foo', 'bar']);
+    new AttributesCollection(['foo', 'bar']);
 })->expectExceptionMessage('Argument "$items" must be an array map.');
 
 it('can be instantiated', function (): void {
-    expect((new Attributes())->toArray())
+    expect((new AttributesCollection())->toArray())
         ->toEqual([]);
 
-    expect((new Attributes($this->attributes))->toArray())
+    expect((new AttributesCollection($this->attributes))->toArray())
         ->toEqual($this->attributes);
 });
 
 it('can be instantiated statically', function (): void {
-    expect(Attributes::make()->toArray())
+    expect(AttributesCollection::make()->toArray())
         ->toEqual([]);
 
     expect($this->instance->toArray())
@@ -80,7 +80,7 @@ it('merges', function (): void {
 });
 
 it('pipes', function (): void {
-    $this->instance->pipe(function (Attributes $attributes) {
+    $this->instance->pipe(function (AttributesCollection $attributes) {
         return $attributes
             ->only(['foo'])
             ->add('a', 'a')
@@ -108,13 +108,13 @@ it('pipes', function (): void {
     expect($exceptionMessage)
         ->toEqual(sprintf(
             '%s: Return value must be of type %s, array returned',
-            'Authanram\Html\Attributes::pipe()',
-            Attributes::class,
+            AttributesCollection::class.'::pipe()',
+            AttributesCollection::class,
         ));
 });
 
 it('renders', function (): void {
-    expect(Attributes::make()->toHtml())
+    expect(AttributesCollection::make()->toHtml())
         ->toBeString()->toBeEmpty()->toEqual('');
 
     expect($this->instance->toHtml())

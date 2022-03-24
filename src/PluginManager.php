@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Authanram\Html;
 
+use Authanram\Html\Collections\PluginCollection;
 use Authanram\Html\Contracts\Renderable;
 
 final class PluginManager
@@ -19,7 +20,7 @@ final class PluginManager
         $this->plugins = new PluginCollection();
     }
 
-    public function plugins(): PluginCollection
+    public function getPluginCollection(): PluginCollection
     {
         return $this->plugins;
     }

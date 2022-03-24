@@ -14,7 +14,7 @@ beforeEach(function () {
     );
 
     $this->renderer = (new Renderer())
-        ->withPlugins([
+        ->setPlugins([
             new TestFiles\TestRendererPluginOne('plugin-one'),
             new TestFiles\TestRendererPluginTwo(),
             new TestFiles\TestRendererPluginThree(),

@@ -2,22 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Authanram\Html;
+namespace Authanram\Html\Collections;
 
+use Authanram\Html\CollectionProxy;
 use Authanram\Html\Contracts\RendererPlugin;
 use InvalidArgumentException;
 
 /**
+ * @method self add(RendererPlugin $plugin)
  * @method self except(array|string $keys)
+ * @method self prepend(RendererPlugin $plugin)
  */
-final class PluginCollection extends Collection
+final class PluginCollection extends CollectionProxy
 {
     protected static array $collectionMethods = [
         'except',
-    ];
-
-    protected static array $collectionMethodsAuthorizing = [
-        'merge',
+        'prepend',
     ];
 
     public static function authorize(array $items): void

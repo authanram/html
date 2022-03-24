@@ -12,8 +12,9 @@ use TypeError;
  * @method array all()
  * @method array toArray()
  * @method self merge(array $items)
+ * @method self prepend(mixed $value, string|int $key = null)
  */
-abstract class Collection
+abstract class CollectionProxy
 {
     protected static array $collectionMethods = [];
 
@@ -51,8 +52,6 @@ abstract class Collection
         'offsetUnset',
     ];
 
-    protected static array $collectionMethodsAuthorizing = [];
-
     protected IlluminateCollection $items;
 
     public static function make(array $items = []): static
@@ -68,7 +67,7 @@ abstract class Collection
     public function __call(string $name, array $arguments): mixed
     {
         $methods = array_merge(
-            ['all', 'toArray', 'merge'],
+            ['add', 'all', 'toArray', 'merge'],
             static::$collectionMethods,
             static::$collectionMethodsVoid,
         );
@@ -83,14 +82,8 @@ abstract class Collection
 
         $result = $this->items->{$name}(...$arguments);
 
-        if (in_array($name, static::$collectionMethodsAuthorizing, true)) {
-            if (method_exists(static::class, 'authorize') === false) {
-                throw new BadMethodCallException(
-                    'Call to undefined method '.static::class.'::authorize()',
-                );
-            }
-
-            static::authorize($result->toArray());
+        if (method_exists(static::class, 'authorize')) {
+            static::authorize(is_array($result) ? $result : $result->all(), $name);
         }
 
         if (in_array($name, static::$collectionMethodsVoid, true)) {

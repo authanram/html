@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Authanram\Html;
 
-use Authanram\Html\Plugins\ElementRendererPlugin;
+use Authanram\Html\Collections\AttributesCollection;
 
 class Element implements Contracts\Renderable
 {
@@ -39,9 +39,7 @@ class Element implements Contracts\Renderable
 
         $this->contents = $contents ?? $this->getContents();
 
-        $this->renderer = $this->renderer()->withPlugins([
-            new ElementRendererPlugin(),
-        ]);
+        $this->renderer = $this->renderer();
     }
 
     public function getTag(): string
@@ -49,9 +47,9 @@ class Element implements Contracts\Renderable
         return $this->tag ??= static::$tagDefault;
     }
 
-    public function getAttributes(): Attributes
+    public function getAttributes(): AttributesCollection
     {
-        return new Attributes($this->attributes ??= []);
+        return new AttributesCollection($this->attributes ?? []);
     }
 
     public function getContents(): array
@@ -71,11 +69,9 @@ class Element implements Contracts\Renderable
         return $this;
     }
 
-    public function setAttributes(Attributes|array $attributes): static
+    public function setAttributes(array $attributes): static
     {
-        $this->attributes = is_array($attributes) === false
-            ? $attributes->toArray()
-            : $attributes;
+        $this->attributes = $attributes;
 
         return $this;
     }

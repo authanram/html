@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Authanram\Html;
+namespace Authanram\Html\Collections;
 
+use Authanram\Html\AttributesRenderer;
+use Authanram\Html\CollectionProxy;
 use InvalidArgumentException;
 
 /**
@@ -12,7 +14,7 @@ use InvalidArgumentException;
  * @method self forget(array|string $keys)
  * @method self only(array|string $keys)
  */
-final class Attributes extends Collection
+class AttributesCollection extends CollectionProxy
 {
     protected static array $collectionMethods = [
         'except',
@@ -48,26 +50,6 @@ final class Attributes extends Collection
 
     public function toHtml(): string
     {
-        return (string)$this;
-    }
-
-    public function __toString(): string
-    {
-        $strings = [];
-
-        foreach ($this->all() as $key => $value) {
-            if (in_array($value, [null, true, ''], true)) {
-                $strings[] = $key;
-                continue;
-            }
-
-            $value = (string)($value === false ? 0 : $value);
-
-            $value = htmlspecialchars($value, ENT_COMPAT);
-
-            $strings[] = "$key=\"$value\"";
-        }
-
-        return implode(' ', $strings);
+        return AttributesRenderer::render($this->items->toArray());
     }
 }
