@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Authanram\Html\Plugins;
 
-use Authanram\Html\AbstractElement;
-use Authanram\Html\RenderPlugin;
+use Authanram\Html\Contracts\Renderable;
+use Authanram\Html\RendererPlugin;
 use Illuminate\Support\Facades\Blade;
 
-class BladeRenderPlugin extends RenderPlugin
+class BladeRendererPlugin extends RendererPlugin
 {
     protected array $attributes = [];
 
@@ -17,7 +17,7 @@ class BladeRenderPlugin extends RenderPlugin
         return str_starts_with($this->element->getTag(), 'x-');
     }
 
-    public function handle(): AbstractElement
+    public function handle(): Renderable
     {
         $attributes = $this->element->getAttributes()->toArray();
 

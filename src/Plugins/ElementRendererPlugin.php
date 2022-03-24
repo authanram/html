@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace Authanram\Html\Plugins;
 
-use Authanram\Html\AbstractElement;
+use Authanram\Html\Contracts\Renderable;
 use Authanram\Html\Element;
-use Authanram\Html\RenderPlugin;
+use Authanram\Html\RendererPlugin;
 use InvalidArgumentException;
 use Spatie\HtmlElement\HtmlElement as SpatieHtmlElement;
 
-class ElementRenderPlugin extends RenderPlugin
+class ElementRendererPlugin extends RendererPlugin
 {
     public function render(?string $html): string
     {
         $rendered = [];
 
         $isElement = static fn ($element) => is_object($element)
-            && is_subclass_of($element::class, AbstractElement::class);
+            && is_subclass_of($element::class, Renderable::class);
 
         $contents = $this->element->getContents();
 
@@ -41,7 +41,7 @@ class ElementRenderPlugin extends RenderPlugin
     {
         $tag = $element['tag'] ?? 'div';
 
-        if (is_subclass_of($tag, AbstractElement::class)) {
+        if (is_subclass_of($tag, Renderable::class)) {
             $instance = new $tag();
 
             $element = [

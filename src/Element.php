@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Authanram\Html;
 
-class Element extends AbstractElement
+use Authanram\Html\Plugins\ElementRendererPlugin;
+
+class Element implements Contracts\Renderable
 {
-    use HasRenderer;
+    use Concerns\HasRenderer;
 
     public static string $tagDefault = 'div';
 
@@ -37,7 +39,9 @@ class Element extends AbstractElement
 
         $this->contents = $contents ?? $this->getContents();
 
-        $this->renderer = $this->renderer();
+        $this->renderer = $this->renderer()->withPlugins([
+            new ElementRendererPlugin(),
+        ]);
     }
 
     public function getTag(): string
@@ -55,7 +59,7 @@ class Element extends AbstractElement
         return $this->contents ??= [];
     }
 
-    public function getRenderer(): AbstractRenderer
+    public function getRenderer(): Contracts\Renderer
     {
         return $this->renderer ??= (new Renderer());
     }
@@ -100,7 +104,7 @@ class Element extends AbstractElement
         return $this->getContents();
     }
 
-    public function renderer(): AbstractRenderer
+    public function renderer(): Contracts\Renderer
     {
         return $this->getRenderer();
     }

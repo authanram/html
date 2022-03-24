@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Authanram\Html\Element;
-use Authanram\Html\Plugins\BladeRenderPlugin;
+use Authanram\Html\Plugins\BladeRendererPlugin;
 
 it('renders', function (): void {
     $element = new Element(
@@ -16,7 +16,7 @@ it('renders', function (): void {
     );
 
     $element->getRenderer()->withPlugins([
-        new BladeRenderPlugin(),
+        new BladeRendererPlugin(),
     ]);
 
     $result = $element->render();

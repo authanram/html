@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Authanram\Html;
 
+use Authanram\Html\Contracts\RendererPlugin;
 use InvalidArgumentException;
 
 /**
@@ -25,15 +26,15 @@ final class PluginCollection extends Collection
             if (is_object($item) === false) {
                 throw new InvalidArgumentException(sprintf(
                     'Expected instance of %s, got: %s (%s)',
-                    AbstractRendererPlugin::class,
+                    RendererPlugin::class,
                     gettype($item),
                     $item,
                 ));
             }
 
-            if (is_subclass_of($item, AbstractRendererPlugin::class) === false) {
+            if (is_subclass_of($item, RendererPlugin::class) === false) {
                 throw new InvalidArgumentException(
-                    $item.' must be a subclass of '.AbstractRendererPlugin::class,
+                    $item.' must be a subclass of '.RendererPlugin::class,
                 );
             }
         }

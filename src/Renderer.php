@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Authanram\Html;
 
-use Authanram\Html\Plugins\ElementRenderPlugin;
-use Authanram\Html\Plugins\TrimRenderPlugin;
+use Authanram\Html\Contracts\Renderable;
+use Authanram\Html\Plugins\ElementRendererPlugin;
+use Authanram\Html\Plugins\TrimRendererPlugin;
 
-class Renderer extends AbstractRenderer
+class Renderer implements Contracts\Renderer
 {
     protected PluginManager $pluginManager;
 
@@ -23,15 +24,15 @@ class Renderer extends AbstractRenderer
         }
 
         $this->pluginManager->plugins()->flush()->merge([
-            new ElementRenderPlugin(),
+            new ElementRendererPlugin(),
             ...$plugins,
-            new TrimRenderPlugin(),
+            new TrimRendererPlugin(),
         ]);
 
         return $this;
     }
 
-    public function render(AbstractElement $element): string
+    public function render(Renderable $element): string
     {
         return $this->pluginManager->handle($element) ?? '';
     }

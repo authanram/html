@@ -2,20 +2,23 @@
 
 declare(strict_types=1);
 
-namespace Authanram\Html;
+namespace Authanram\Html\Concerns;
+
+use Authanram\Html\Contracts;
+use Authanram\Html\Renderer;
 
 trait HasRenderer
 {
-    protected AbstractRenderer $renderer;
+    protected Contracts\Renderer $renderer;
 
-    public function getRenderer(): AbstractRenderer
+    public function getRenderer(): Contracts\Renderer
     {
         $this->renderer ??= new Renderer();
 
         return $this->renderer;
     }
 
-    public function setRenderer(AbstractRenderer $renderer): static
+    public function setRenderer(Contracts\Renderer $renderer): static
     {
         $this->renderer = $renderer;
 

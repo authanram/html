@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Authanram\Html;
 
-class RenderPlugin extends AbstractRendererPlugin
-{
-    protected AbstractElement $element;
+use Authanram\Html\Contracts\Renderable;
 
-    public function setElement(AbstractElement $element): static
+abstract class RendererPlugin implements Contracts\RendererPlugin
+{
+    protected Renderable $element;
+
+    public function setElement(Renderable $element): static
     {
         $this->element = $element;
 
@@ -20,7 +22,7 @@ class RenderPlugin extends AbstractRendererPlugin
         return true;
     }
 
-    public function handle(): AbstractElement
+    public function handle(): Renderable
     {
         return $this->element;
     }

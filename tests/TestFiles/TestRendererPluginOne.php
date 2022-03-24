@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Authanram\Html\Tests\TestFiles;
 
-use Authanram\Html\RenderPlugin;
+use Authanram\Html\RendererPlugin;
 
-class TestRendererPluginOne extends RenderPlugin
+class TestRendererPluginOne extends RendererPlugin
 {
     public function __construct(protected string $classAttribute)
     {

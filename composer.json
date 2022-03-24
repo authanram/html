@@ -15,6 +15,7 @@
     },
     "require-dev": {
         "illuminate/view": "^9.0",
+        "milroyfraser/pest-plugin-gwt": "^0.0.2",
         "nunomaduro/phpinsights": "^2.0",
         "orchestra/testbench": "^7.0",
         "pestphp/pest": "^1.20",

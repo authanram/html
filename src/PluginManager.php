@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Authanram\Html;
 
+use Authanram\Html\Contracts\Renderable;
+
 final class PluginManager
 {
     protected array $methods = [];
@@ -22,7 +24,7 @@ final class PluginManager
         return $this->plugins;
     }
 
-    public function handle(AbstractElement $element): mixed
+    public function handle(Renderable $element): mixed
     {
         $result = null;
 
@@ -33,7 +35,7 @@ final class PluginManager
         return $result;
     }
 
-    protected function handleVia(AbstractElement $element, string $via): mixed
+    protected function handleVia(Renderable $element, string $via): mixed
     {
         $result = null;
 
