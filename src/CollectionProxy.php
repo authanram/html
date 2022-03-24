@@ -99,22 +99,6 @@ abstract class CollectionProxy
         return $this;
     }
 
-    public function pipe(callable $callback): IlluminateCollection
-    {
-        $result = $callback($this);
-
-        if (is_object($result) && is_subclass_of($result, __CLASS__)) {
-            return $result->items;
-        }
-
-        throw new TypeError(sprintf(
-            '%s: Return value must be of type %s, %s returned',
-            static::class.'::'.__FUNCTION__.'()',
-            static::class,
-            is_object($result) ? $result::class : gettype($result),
-        ));
-    }
-
     public function flush(): static
     {
         $this->items = new IlluminateCollection();

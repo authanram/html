@@ -4,52 +4,109 @@ declare(strict_types=1);
 
 namespace Authanram\Html\Collections;
 
+use Arr;
 use Authanram\Html\AttributesRenderer;
-use Authanram\Html\CollectionProxy;
 use InvalidArgumentException;
+use TypeError;
 
-/**
- * @method mixed get(string $key)
- * @method self except(array|string $keys)
- * @method self forget(array|string $keys)
- * @method self only(array|string $keys)
- */
-class AttributesCollection extends CollectionProxy
+class AttributesCollection
 {
-    protected static array $collectionMethods = [
-        'except',
-        'forget',
-        'get',
-        'only',
-    ];
+    /** @var <string, bool|float|int|string>[] */
+    protected array $items = [];
+
+    public static function make(array $items = []): static
+    {
+        return new static($items);
+    }
 
     public function __construct(array $items = [])
     {
-        if (count($items) && array_is_list($items)) {
+        if (count($items) && Arr::isList($items)) {
             throw new InvalidArgumentException('Argument "$items" must be an array map.');
         }
 
-        parent::__construct($items);
+        $this->items = $items;
     }
 
-    public function set(string|int $key, string|float|int|bool $value): self
+    public function add(string $key, bool|float|int|string $value): self
     {
-        $this->items = $this->items->put($key, $value);
-
-        return $this;
-    }
-
-    public function add(string|int $key, string|float|int|bool $value): self
-    {
-        if ($this->items->keys()->contains($key) === false) {
-            $this->items = $this->items->merge([$key => $value]);
+        if (array_key_exists($key, $this->items) === false) {
+            $this->items[$key] = $value;
         }
 
         return $this;
+    }
+
+    public function except(array|string $keys): self
+    {
+        $this->items = Arr::except($this->items, $keys);
+
+        return $this;
+    }
+
+    public function flush(): self
+    {
+        $this->items = [];
+
+        return $this;
+    }
+
+    public function forget(array|string $keys): self
+    {
+        Arr::forget($this->items, $keys);
+
+        return $this;
+    }
+
+    public function get(string $key, mixed $default = null): mixed
+    {
+        return $this->items[$key] ?? $default;
+    }
+
+    public function merge(array $items): self
+    {
+        $this->items = array_merge($this->items, $items);
+
+        return $this;
+    }
+
+    public function only(array|string $keys): self
+    {
+        $this->items = Arr::only($this->items, $keys);
+
+        return $this;
+    }
+
+    public function set(string $key, bool|float|int|string $value): self
+    {
+        $this->items[$key] = $value;
+
+        return $this;
+    }
+
+    public function pipe(callable $callback): static
+    {
+        $result = $callback($this);
+
+        if (is_object($result) && $result::class === __CLASS__) {
+            return $result;
+        }
+
+        throw new TypeError(sprintf(
+            '%s: Return value must be of type %s, %s returned',
+            static::class.'::'.__FUNCTION__.'()',
+            static::class,
+            is_object($result) ? $result::class : gettype($result),
+        ));
+    }
+
+    public function toArray(): array
+    {
+        return $this->items;
     }
 
     public function toHtml(): string
     {
-        return AttributesRenderer::render($this->items->toArray());
+        return AttributesRenderer::render($this->items);
     }
 }
