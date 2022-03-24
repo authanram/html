@@ -6,18 +6,23 @@ use Authanram\Html\Element;
 use Authanram\Html\Renderer;
 use Authanram\Html\Tests\TestFiles;
 
+beforeEach(function () {
+    $this->element = new Element();
+});
+
 test('renderer can be get', function (): void {
-    $element = new Element();
+    expect($this->element->getRenderer())
+        ->toBeInstanceOf(Renderer::class);
 
-    expect($element->getRenderer())->toBeInstanceOf(Renderer::class);
+    $this->element->setRenderer(new TestFiles\TestRenderer());
 
-    $element->setRenderer(new TestFiles\TestRenderer());
-
-    expect($element->getRenderer())->toBeInstanceOf(TestFiles\TestRenderer::class);
+    expect($this->element->getRenderer())
+        ->toBeInstanceOf(TestFiles\TestRenderer::class);
 });
 
 test('renderer can be set', function (): void {
-    $element = (new Element())->setRenderer(new TestFiles\TestRenderer());
+    $this->element->setRenderer(new TestFiles\TestRenderer());
 
-    expect($element->getRenderer())->toBeInstanceOf(TestFiles\TestRenderer::class);
+    expect($this->element->getRenderer())
+        ->toBeInstanceOf(TestFiles\TestRenderer::class);
 });
