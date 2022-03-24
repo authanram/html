@@ -6,10 +6,10 @@ use Authanram\Html\Element;
 use Authanram\Html\Tests\TestFiles;
 
 it('renders', function (): void {
-    expect((new Element())->render())->toEqual('<div></div>');
+    expect(Element::make()->render())->toEqual('<div></div>');
 
     expect(
-        (new Element())
+        Element::make()
             ->setTag('span')
             ->setAttributes(['class' => 'red'])
             ->setContents(['text'])
@@ -19,7 +19,7 @@ it('renders', function (): void {
     );
 
     expect(
-        (new Element('div', ['class' => 'green'], 'text'))->render()
+        Element::make('div', ['class' => 'green'], 'text')->render()
     )->toEqual(
         '<div class="green">text</div>',
     );
@@ -30,17 +30,15 @@ it('renders array contents', function (): void {
 
     $contents = ['text', '&nbsp;', 'array', ' ', '!'];
 
-    $result = (new Element(null, null, $contents))->render();
+    expect(Element::make(null, null, $contents))->render()
+        ->toEqual($expectation);
 
-    expect($result)->toEqual($expectation);
-
-    $result = (new Element)->setContents($contents)->render();
-
-    expect($result)->toEqual($expectation);
+    expect(Element::make()->setContents($contents)->render())
+        ->toEqual($expectation);
 });
 
 it('renders with plugins', function (): void {
-    $element = new Element('div', ['class' => 'green'], []);
+    $element = Element::make('div', ['class' => 'green'], []);
 
     $result = $element->render([
         new TestFiles\TestRendererPluginOne('plugin-one'),
@@ -49,54 +47,44 @@ it('renders with plugins', function (): void {
     ]);
 
     expect($result)->toEqual(
-        '<div class="plugin-three"><div class="plugin-two"><div class="plugin-one"><div class="green"></div></div></div></div>',
+        '<div class="plugin-three"><div class="plugin-two"><div class="plugin-one"><div class="green"></div></div></div></div>'
     );
 });
 
 it('renders contents from element', function (): void {
-    $element = new Element('div', ['class' => 'green'], [
-        new Element('span', ['class' => 'yellow'], ['foo']),
+    $element = Element::make('div', ['class' => 'green'], [
+        Element::make('span', ['class' => 'yellow'], ['foo']),
     ]);
 
-    $result = $element->render();
-
-    expect($result)->toEqual(
+    expect($element->render())->toEqual(
         '<div class="green"><span class="yellow">foo</span></div>',
     );
 });
 
 it('renders contents from array', function (): void {
-    $element = new Element('div', ['class' => 'green'], [
+    $element = Element::make('div', ['class' => 'green'], [
         ['tag' => 'span', 'attributes' => ['class' => 'blue'], 'contents' => ['bar']],
     ]);
 
-    $result = $element->render();
-
-    expect($result)->toEqual(
+    expect($element->render())->toEqual(
         '<div class="green"><span class="blue">bar</span></div>',
     );
 });
 
 it('renders contents from array with custom tag', function (): void {
-    $element = new Element('div', ['class' => 'green'], [
-        ['tag' => TestFiles\TestElement::class, 'attributes' => ['class' => 'orange']],
-    ]);
+    $child = ['tag' => TestFiles\TestElement::class, 'attributes' => ['class' => 'orange']];
 
-    $result = $element->render();
+    $element = Element::make('div', ['class' => 'green'], [$child]);
 
-    expect($result)->toEqual(
+    expect($element->render())->toEqual(
         '<div class="green"><span class="orange">foo: <span data-x="bar">qux</span></span></div>',
     );
 });
 
 it('renders contents from string', function (): void {
-    $element = new Element('div', ['class' => 'green'], [
-        'baz',
-    ]);
+    $element = Element::make('div', ['class' => 'green'], ['baz']);
 
-    $result = $element->render();
-
-    expect($result)->toEqual(
+    expect($element->render())->toEqual(
         '<div class="green">baz</div>',
     );
 });

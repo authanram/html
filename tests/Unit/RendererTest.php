@@ -7,7 +7,7 @@ use Authanram\Html\Renderer;
 use Authanram\Html\Tests\TestFiles;
 
 beforeEach(function () {
-    $this->element = new Element(
+    $this->element = Element::make(
         'div',
         ['class' => 'green'],
         ['baz'],

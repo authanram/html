@@ -7,7 +7,7 @@ use Authanram\Html\Renderer;
 use Authanram\Html\Tests\TestFiles;
 
 beforeEach(function () {
-    $this->element = new Element();
+    $this->element = Element::make();
 });
 
 test('renderer can be get', function (): void {

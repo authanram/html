@@ -7,7 +7,7 @@ use Authanram\Html\RendererPlugin;
 
 it('renders', function (): void {
     $plugin = (new RendererPlugin())
-        ->setElement(new Element())
+        ->setElement(Element::make())
         ->setCallbackHandle(
             fn (Element $element) => $element
                 ->setTag('p')

@@ -6,7 +6,7 @@ use Authanram\Html\Element;
 use Authanram\Html\Plugins\BladeRendererPlugin;
 
 it('renders', function (): void {
-    $element = new Element(
+    $element = Element::make(
         'x-html::test',
         [
             'text' => 'foobar',
