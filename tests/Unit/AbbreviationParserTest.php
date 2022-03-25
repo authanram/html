@@ -6,7 +6,7 @@ use Authanram\Html\AbbreviationParser;
 use function Authanram\Html\element;
 
 it('parses', function () {
-    $element = element('div.blue[text=one] > span.red[text=two] > p.green[text=three]', [
+    $element = element('div.blue[data-blue][text=one] > span.red[text=two] > p.green[text=three]', [
         'one' => 'ONE',
         'two' => element('div.yellow[text=four]', [
             'four' => 'FOUR',
@@ -15,7 +15,7 @@ it('parses', function () {
     ]);
 
     expect($element->render())->toEqual(
-        '<div class="blue"><span class="red"><p class="green">three</p><div class="yellow">FOURyellow</div></span>ONE</div>',
+        '<div data-blue class="blue"><span class="red"><p class="green">three</p><div class="yellow">FOURyellow</div></span>ONE</div>',
     );
 });
 

@@ -20,8 +20,8 @@ use Authanram\Html\Renderer;
 $qux = [
     'tag' => 'a',
     'attributes' => [
-        'class' => 'hover:underline text-blue-600',
         'href' => 'https://github.com/authanram',
+        'class' => 'text-blue-600',
         'data-anchor' => true,
     ],
     'contents' => [
@@ -35,7 +35,7 @@ Renderer::renderFromArray($qux);
 `Renderer::renderFromArray($qux);` will return the following `string`:
 
 ```html
-<a class="hover:underline text-blue-600" href="https://github.com/authanram" data-anchor>
+<a href="https://github.com/authanram" class="text-blue-600" data-anchor>
     authanram at github.com
 </a>
 ```
@@ -51,7 +51,7 @@ $qux = [
         [
             'tag' => 'a',
             'attributes' => [
-                'class' => 'hover:underline text-blue-600',
+                'class' => 'text-blue-600',
                 'href' => 'https://github.com/authanram',
             ],
             'contents' => [
@@ -74,7 +74,7 @@ Renderer::renderFromArray($qux);
 
 ```html
 <p>
-    <a class="hover:underline text-blue-600" href="https://github.com/authanram">
+    <a class="text-blue-600" href="https://github.com/authanram">
         <span class="semibold">
             authanram at github.com
         </span>
@@ -85,15 +85,30 @@ Renderer::renderFromArray($qux);
 ## Class Based Usage
 
 As you can see [here](https://github.com/authanram/html/blob/1e58bf82d16d06dde3b2860ab181cf7ebfb5e5a7/src/Renderer.php#L60),
-we can achieve the same result using the class `Authanram\Html\Element` delivered by this package:
+we can achieve the same result using the static method `Authanram\Html\Element::make()`:
 
 ```php
 use Authanram\Html\Element;
 
-(new Element('a', [
-    'href' => 'https://gitub.com',
-    'class' => 'hover:underline text-blue-600'
-], ['']))->render();
+Element::make(
+    'a',
+    [
+        'href' => 'https://gitub.com',
+        'class' => 'text-blue-600',
+    ],
+    ['authanram at github.com'],
+)->render();
+```
+
+## Abbreviation Based Usage
+
+...
+
+```php
+use Authanram\Html\Element;
+
+Element::parse('a.text-blue-600[href=https://gitub.com]')
+    ->render();
 ```
 
 ## Credits
