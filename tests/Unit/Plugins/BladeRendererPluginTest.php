@@ -27,7 +27,7 @@ it('will authorize', function (): void {
 });
 
 it('renders', function (): void {
-    $this->element->getRenderer()->plugins()->set([
+    $this->element->getRenderer()->setPlugins([
         new BladeRendererPlugin(),
     ]);
 

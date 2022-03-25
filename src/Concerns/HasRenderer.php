@@ -32,7 +32,7 @@ trait HasRenderer
             ->setContents($this->contents());
 
         if (count($plugins)) {
-            $this->getRenderer()->plugins()->set($plugins);
+            $this->getRenderer()->setPlugins($plugins);
         }
 
         return $this->getRenderer()->render($this);

@@ -20,9 +20,11 @@ class Renderer implements Contracts\Renderer
         $this->plugins = (new PluginCollection())->add($plugins);
     }
 
-    public function plugins(): PluginCollection
+    public function setPlugins(array $plugins): static
     {
-        return $this->plugins;
+        $this->plugins->set($plugins);
+
+        return $this;
     }
 
     public function render(Contracts\Renderable $element): string
