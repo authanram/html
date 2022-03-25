@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Authanram\Html;
 
 use Authanram\Html\Collections\AttributeCollection;
+use Authanram\Html\Contracts\Renderable;
 
 class Element implements Contracts\Renderable
 {
@@ -26,7 +27,7 @@ class Element implements Contracts\Renderable
         return new static($tag, $attributes, $contents);
     }
 
-    public static function parse(string $tag, array|string $contents = []): static
+    public static function parse(string $tag, array|string $contents = []): Renderable
     {
         return AbbreviationParser::parse($tag, is_string($contents) ? [$contents] : $contents);
     }

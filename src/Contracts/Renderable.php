@@ -8,6 +8,10 @@ use Authanram\Html\Collections\AttributeCollection;
 
 interface Renderable
 {
+    public static function make(?string $tag = null, ?array $attributes = null, array|string|null $contents = null);
+
+    public static function parse(string $tag, array|string $contents = []): Renderable;
+
     public function getTag(): string;
 
     public function getAttributes(): AttributeCollection;
