@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Authanram\Html\Contracts;
 
-use Authanram\Html\Collections\AttributesCollection;
+use Authanram\Html\Collections\AttributeCollection;
 
 interface Renderable
 {
     public function getTag(): string;
 
-    public function getAttributes(): AttributesCollection;
+    public function getAttributes(): AttributeCollection;
 
     public function getContents(): array;
 

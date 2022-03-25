@@ -13,12 +13,11 @@ beforeEach(function () {
         ['baz'],
     );
 
-    $this->renderer = (new Renderer())
-        ->setPlugins([
-            new TestFiles\TestRendererPluginOne('plugin-one'),
-            new TestFiles\TestRendererPluginTwo(),
-            new TestFiles\TestRendererPluginThree(),
-        ]);
+    $this->renderer = new Renderer([
+        new TestFiles\TestRendererPluginOne('plugin-one'),
+        new TestFiles\TestRendererPluginTwo(),
+        new TestFiles\TestRendererPluginThree(),
+    ]);
 });
 
 it('renders', function (): void {

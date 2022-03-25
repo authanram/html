@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Authanram\Html\Tests\TestFiles;
 
+use Authanram\Html\Contracts\RendererPlugin as Contract;
 use Authanram\Html\RendererPlugin;
 
-class TestRendererPluginOne extends RendererPlugin
+class TestRendererPluginOne extends RendererPlugin implements Contract
 {
-    public function __construct(protected string $classAttribute)
+    public function __construct(protected string $classAttribute = '')
     {
     }
 

@@ -4,15 +4,11 @@ declare(strict_types=1);
 
 namespace Authanram\Html\Contracts;
 
+use Authanram\Html\Collections\PluginCollection;
+
 interface Renderer
 {
-    /** @param RendererPlugin[] $plugins */
-    public function setPlugins(array $plugins): static;
-
-    public function addPlugin(RendererPlugin $plugin): static;
-
-    /** @param RendererPlugin[] $plugins */
-    public function addPlugins(array $plugins): static;
+    public function plugins(): PluginCollection;
 
     public function render(Renderable $element): string;
 }

@@ -4,52 +4,52 @@ declare(strict_types=1);
 
 namespace Authanram\Html;
 
+use Authanram\Html\Collections\PluginCollection;
 use Authanram\Html\Contracts;
+use Authanram\Html\Contracts\RendererPlugin;
 use Authanram\Html\Plugins\ElementRendererPlugin;
 use Authanram\Html\Plugins\TrimRendererPlugin;
 
 class Renderer implements Contracts\Renderer
 {
-    protected PluginManager $pluginManager;
+    protected PluginCollection $plugins;
 
-    public function __construct(array $methods = ['handle', 'render'])
+    /**  @param <int, RendererPlugin|string>[] $plugins */
+    public function __construct(array $plugins = [])
     {
-        $this->pluginManager = new PluginManager($methods);
+        $this->plugins = (new PluginCollection())->add($plugins);
     }
 
-    public function setPlugins(array $plugins): static
+    public function plugins(): PluginCollection
     {
-        if (count($plugins) === 0) {
-            return $this;
-        }
-
-        $this->pluginManager->getPluginCollection()->flush()->merge($plugins);
-
-        return $this;
-    }
-
-    public function addPlugin(Contracts\RendererPlugin $plugin): static
-    {
-        $this->pluginManager->getPluginCollection()->add($plugin);
-
-        return $this;
-    }
-
-    public function addPlugins(array $plugins): static
-    {
-        foreach ($plugins as $plugin) {
-            $this->addPlugin($plugin);
-        }
-
-        return $this;
+        return $this->plugins;
     }
 
     public function render(Contracts\Renderable $element): string
     {
-        $this->pluginManager->getPluginCollection()
+        $this->plugins
             ->prepend(new ElementRendererPlugin())
             ->add(new TrimRendererPlugin());
 
-        return $this->pluginManager->handle($element) ?? '';
+        foreach (['handle', 'render'] as $method) {
+            $result = $this->handleVia($element, $method);
+        }
+
+        return $result;
+    }
+
+    protected function handleVia(Contracts\Renderable $element, string $via): mixed
+    {
+        $plugins = $this->plugins->toArray();
+
+        $result = null;
+
+        foreach ($plugins as $plugin) {
+            $result = (is_string($plugin) ? new $plugin() : $plugin)
+                ->setElement($element)
+                ->{$via}($result);
+        }
+
+        return $result;
     }
 }

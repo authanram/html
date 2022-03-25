@@ -10,6 +10,10 @@
         </testsuite>
     </testsuites>
     <coverage processUncoveredFiles="true">
+        <exclude>
+            <file>./src/Functions.php</file>
+            <file>./src/Providers/HtmlServiceProvider.php</file>
+        </exclude>
         <include>
             <directory suffix=".php">./src</directory>
         </include>

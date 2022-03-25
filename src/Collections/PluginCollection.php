@@ -8,17 +8,30 @@ use Authanram\Html\Contracts\RendererPlugin;
 
 final class PluginCollection extends Collection
 {
-    public function add(RendererPlugin $value): self
+    public function set(RendererPlugin|array $plugins): self
     {
-        $this->items[] = $value;
+        return $this->flush()->add($plugins);
+    }
+
+    public function add(RendererPlugin|array $plugins): self
+    {
+        if (is_object($plugins)) {
+            $this->items[] = $plugins;
+
+            return $this;
+        }
+
+        foreach ($plugins as $plugin) {
+            $this->add($plugin);
+        }
 
         return $this;
     }
 
-    public function prepend(RendererPlugin $plugin): self
+    public function prepend(RendererPlugin|array $plugins): self
     {
-        array_unshift($this->items, $plugin);
+        $items = $this->items;
 
-        return $this;
+        return $this->flush()->add($plugins)->merge($items);
     }
 }

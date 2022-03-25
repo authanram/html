@@ -6,7 +6,7 @@ namespace Authanram\Html;
 
 use Closure;
 
-class AttributesRenderer
+final class AttributesRenderer
 {
     /**
      * @param <string, mixed>[] $attributes
@@ -15,7 +15,7 @@ class AttributesRenderer
      */
     public static function render(array $attributes, array $handlers = []): string
     {
-        $handlers = array_merge(static::handlers(), $handlers);
+        $handlers = array_merge(self::handlers(), $handlers);
 
         $strings = [];
 

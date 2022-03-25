@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Authanram\Html;
+namespace Authanram\Html\Tests\TestFiles;
 
 use Authanram\Html\Contracts\Renderable;
+use Authanram\Html\Contracts\RendererPlugin as Contract;
+use Authanram\Html\RendererPlugin;
 
-abstract class RendererPlugin
+class TestRenderPlugin extends RendererPlugin implements Contract
 {
-    protected Renderable $element;
-
     public function setElement(Renderable $element): static
     {
         $this->element = $element;
@@ -24,11 +24,15 @@ abstract class RendererPlugin
 
     public function handle(): Renderable
     {
-        return $this->element;
+        return $this->element
+            ->setTag('p')
+            ->setAttributes([
+                'data-handle' => true,
+            ]);
     }
 
     public function render(string $html): string
     {
-        return $html;
+        return '<div data-render>'.$html.'</div>';
     }
 }

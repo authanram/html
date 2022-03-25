@@ -9,7 +9,7 @@ use Authanram\Html\AttributesRenderer;
 use InvalidArgumentException;
 use TypeError;
 
-class AttributesCollection extends Collection
+class AttributeCollection extends Collection
 {
     public function __construct(array $items = [])
     {

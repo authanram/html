@@ -24,7 +24,10 @@
     "autoload": {
         "psr-4": {
             "Authanram\\Html\\": "src/"
-        }
+        },
+        "files": [
+            "src/Functions.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

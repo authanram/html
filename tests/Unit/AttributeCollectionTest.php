@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Authanram\Html\Collections\AttributesCollection;
+use Authanram\Html\Collections\AttributeCollection;
 
 beforeEach(function () {
     $this->attributes = [
@@ -13,23 +13,23 @@ beforeEach(function () {
         'data-foo' => true,
     ];
 
-    $this->instance = AttributesCollection::make($this->attributes);
+    $this->instance = AttributeCollection::make($this->attributes);
 });
 
 it('throws if attributes is not an array map', function (): void {
-    new AttributesCollection(['foo', 'bar']);
+    new AttributeCollection(['foo', 'bar']);
 })->expectExceptionMessage('Argument "$items" must be an array map.');
 
 it('can be instantiated', function (): void {
-    expect((new AttributesCollection())->toArray())
+    expect((new AttributeCollection())->toArray())
         ->toEqual([]);
 
-    expect((new AttributesCollection($this->attributes))->toArray())
+    expect((new AttributeCollection($this->attributes))->toArray())
         ->toEqual($this->attributes);
 });
 
 it('can be instantiated statically', function (): void {
-    expect(AttributesCollection::make()->toArray())
+    expect(AttributeCollection::make()->toArray())
         ->toEqual([]);
 
     expect($this->instance->toArray())
@@ -44,6 +44,16 @@ it('gets attribute', function (): void {
 it('sets attribute', function (): void {
     expect($this->instance->set('bar', 'quux')->get('bar'))
         ->toEqual('quux');
+});
+
+it('flushes', function (): void {
+    $this->instance->flush();
+
+    expect($this->instance->toArray())
+        ->toBeEmpty()->toEqual([]);
+
+    expect($this->instance->toHtml())
+        ->toBeEmpty()->toEqual('');
 });
 
 it('forwards call forget', function (): void {
@@ -64,23 +74,13 @@ it('forwards call only', function (): void {
         ->toEqual('foo="bar" baz="qux" data-foo');
 });
 
-it('flushes', function (): void {
-    $this->instance->flush();
-
-    expect($this->instance->toArray())
-        ->toBeEmpty()->toEqual([]);
-
-    expect($this->instance->toHtml())
-        ->toBeEmpty()->toEqual('');
-});
-
 it('merges', function (): void {
     expect($this->instance->merge(['a' => 'a', 'z' => 2])->toHtml())
         ->toEqual('quux="0" foo="bar" bar="foo bar baz" baz="qux" data-foo a="a" z="2"');
 });
 
 it('pipes', function (): void {
-    $this->instance->pipe(function (AttributesCollection $attributes) {
+    $this->instance->pipe(function (AttributeCollection $attributes) {
         return $attributes
             ->only(['foo'])
             ->add('a', 'a')
@@ -108,13 +108,13 @@ it('pipes', function (): void {
     expect($exceptionMessage)
         ->toEqual(sprintf(
             '%s: Return value must be of type %s, array returned',
-            AttributesCollection::class.'::pipe()',
-            AttributesCollection::class,
+            AttributeCollection::class.'::pipe()',
+            AttributeCollection::class,
         ));
 });
 
 it('renders', function (): void {
-    expect(AttributesCollection::make()->toHtml())
+    expect(AttributeCollection::make()->toHtml())
         ->toBeString()->toBeEmpty()->toEqual('');
 
     expect($this->instance->toHtml())

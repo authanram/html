@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Authanram\Html;
 
-use Authanram\Html\Collections\AttributesCollection;
+use Authanram\Html\Collections\AttributeCollection;
 
 class Element implements Contracts\Renderable
 {
@@ -24,6 +24,11 @@ class Element implements Contracts\Renderable
         array|string|null $contents = null
     ): static {
         return new static($tag, $attributes, $contents);
+    }
+
+    public static function parse(string $tag, array|string $contents = []): static
+    {
+        return AbbreviationParser::parse($tag, is_string($contents) ? [$contents] : $contents);
     }
 
     public function __construct(
@@ -47,9 +52,9 @@ class Element implements Contracts\Renderable
         return $this->tag ??= static::$tagDefault;
     }
 
-    public function getAttributes(): AttributesCollection
+    public function getAttributes(): AttributeCollection
     {
-        return new AttributesCollection($this->attributes ?? []);
+        return new AttributeCollection($this->attributes ?? []);
     }
 
     public function getContents(): array

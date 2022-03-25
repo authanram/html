@@ -6,7 +6,7 @@ namespace Authanram\Html\Collections;
 
 use Arr;
 
-class Collection
+abstract class Collection
 {
     /** @var <string|int, mixed>[] */
     protected array $items = [];

@@ -31,8 +31,10 @@ trait HasRenderer
             ->setAttributes($this->attributes())
             ->setContents($this->contents());
 
-        return $this->getRenderer()
-            ->setPlugins($plugins)
-            ->render($this);
+        if (count($plugins)) {
+            $this->getRenderer()->plugins()->set($plugins);
+        }
+
+        return $this->getRenderer()->render($this);
     }
 }

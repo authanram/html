@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace Authanram\Html\Plugins;
 
-use Authanram\Html\Contracts\Renderable;
+use Authanram\Html\Contracts;
 use Authanram\Html\Element;
 use Authanram\Html\RendererPlugin;
 use InvalidArgumentException;
 
-class ElementRendererPlugin extends RendererPlugin
+class ElementRendererPlugin extends RendererPlugin implements Contracts\RendererPlugin
 {
     public function render(?string $html): string
     {
         $rendered = '';
 
         $isElement = static fn ($element) => is_object($element)
-            && is_subclass_of($element::class, Renderable::class);
+            && is_subclass_of($element::class, Contracts\Renderable::class);
 
         $contents = $this->element->getContents();
 
@@ -43,7 +43,7 @@ class ElementRendererPlugin extends RendererPlugin
     {
         $tag = $element['tag'] ?? 'div';
 
-        if (is_subclass_of($tag, Renderable::class)) {
+        if (is_subclass_of($tag, Contracts\Renderable::class)) {
             $instance = new $tag();
 
             $element = [
@@ -59,7 +59,7 @@ class ElementRendererPlugin extends RendererPlugin
     protected static function tagTemplate(string $tag): string
     {
         return in_array($tag, static::selfClosingTags())
-            ? '<%s %s />'
+            ? '<%s%s/>'
             : "<%s%s>%s</%1\$s>";
     }
 
